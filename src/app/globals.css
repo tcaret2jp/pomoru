@@ -1,3 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
+
+  --color-background: #F9F9F9;
+  --color-foreground: #1A1A1A;
+  --color-muted-foreground: #71717A;
+  --color-primary: #DC2626;
+  --color-secondary: #059669;
+
+  --color-dark-background: #000000;
+  --color-dark-foreground: #FFFFFF;
+  --color-dark-muted-foreground: #A1A1AA;
+  --color-dark-primary: #EF4444;
+  --color-dark-secondary: #10B981;
+}
+
+@layer base {
+  :root {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .dark {
+    background-color: var(--color-dark-background);
+    color: var(--color-dark-foreground);
+  }
+}

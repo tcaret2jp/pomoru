@@ -18,19 +18,26 @@
   - [x] `npm install -D prettier-plugin-tailwindcss` (Tailwind クラスの自動ソート用)
 
 ### 1.2 デザインシステム基盤の構築
-- [ ] **フォント設定 (`src/app/layout.tsx`)**
-  - [ ] `next/font/google` から `Inter` と `JetBrains_Mono` をインポート
-  - [ ] `Inter` を `variable: --font-inter` として定義
-  - [ ] `JetBrains_Mono` を `variable: --font-mono` として定義
-  - [ ] `<body>` タグの `className` に変数を適用
-- [ ] **Tailwind 設定 (`tailwind.config.ts`)**
-  - [ ] `theme.extend.colors` に `design.md` のカラーパレットを追加
-    - [ ] `background`: `#F9F9F9` (light), `#000000` (dark)
-    - [ ] `primary`: `#DC2626` (light), `#EF4444` (dark) - 作業用
-    - [ ] `secondary`: `#059669` (light), `#10B981` (dark) - 休憩用
-  - [ ] `theme.extend.fontFamily` に `sans` (Inter) と `mono` (JetBrains Mono) を追加
-- [ ] **ユーティリティ作成 (`src/lib/utils.ts`)**
-  - [ ] `cn` 関数を実装 (clsx と tailwind-merge を使用)
+
+- [x] **フォント設定 (`src/app/layout.tsx`)**
+
+  - [x] `next/font/google` から `Inter` と `JetBrains_Mono` をインポート
+
+  - [x] `Inter` を `variable: --font-inter` として定義
+
+  - [x] `JetBrains_Mono` を `variable: --font-mono` として定義
+
+  - [x] `<body>` タグの `className` に変数を適用
+
+- [x] **Tailwind 設定 (`src/app/globals.css` - Tailwind v4)**
+
+  - [x] `@theme` ブロックに `design.md` のカラーパレットを追加
+
+  - [x] `fontFamily` に `sans` (Inter) と `mono` (JetBrains Mono) を追加
+
+- [x] **ユーティリティ作成 (`src/lib/utils.ts`)**
+
+  - [x] `cn` 関数を実装 (clsx と tailwind-merge を使用)
 
 ### 1.3 Atomic コンポーネント実装
 - [ ] **ボタンコンポーネント (`src/components/ui/Button.tsx`)**
