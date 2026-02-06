@@ -5,17 +5,17 @@
 ## Phase 1: MVP (Core Timer) - 基本機能の実装
 
 ### 1.1 プロジェクト初期化とクリーンアップ
-- [ ] **不要ファイルの削除と初期化**
-  - [ ] `src/app/page.module.css` を削除
-  - [ ] `public/` 以下の `next.svg`, `vercel.svg`, `window.svg`, `globe.svg`, `file.svg` を削除
-  - [ ] `src/app/globals.css` の内容を消去し、Tailwind directives (`@tailwind base;` 等) 3行のみにする
-  - [ ] `src/app/page.tsx` を編集し、既存のコードを削除して `<main className="flex min-h-screen flex-col items-center justify-center">Pomoru</main>` だけにする
-  - [ ] `src/app/layout.tsx` の `metadata` を更新 (title: "Pomoru", description: "Simple Pomodoro Timer")
-- [ ] **必須ライブラリのインストール**
-  - [ ] `npm install lucide-react` (アイコン用)
-  - [ ] `npm install clsx tailwind-merge` (クラス名結合用)
-  - [ ] `npm install use-sound` (サウンド再生用)
-  - [ ] `npm install -D prettier-plugin-tailwindcss` (Tailwind クラスの自動ソート用)
+- [x] **不要ファイルの削除と初期化**
+  - [x] `src/app/page.module.css` を削除
+  - [x] `public/` 以下の `next.svg`, `vercel.svg`, `window.svg`, `globe.svg`, `file.svg` を削除
+  - [x] `src/app/globals.css` の内容を消去し、Tailwind directives (`@tailwind base;` 等) 3行のみにする
+  - [x] `src/app/page.tsx` を編集し、既存のコードを削除して `<main className="flex min-h-screen flex-col items-center justify-center">Pomoru</main>` だけにする
+  - [x] `src/app/layout.tsx` の `metadata` を更新 (title: "Pomoru", description: "Simple Pomodoro Timer")
+- [x] **必須ライブラリのインストール**
+  - [x] `npm install lucide-react` (アイコン用)
+  - [x] `npm install clsx tailwind-merge` (クラス名結合用)
+  - [x] `npm install use-sound` (サウンド再生用)
+  - [x] `npm install -D prettier-plugin-tailwindcss` (Tailwind クラスの自動ソート用)
 
 ### 1.2 デザインシステム基盤の構築
 - [ ] **フォント設定 (`src/app/layout.tsx`)**
