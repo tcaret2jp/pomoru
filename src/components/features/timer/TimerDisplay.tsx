@@ -6,11 +6,18 @@ interface TimerDisplayProps {
 }
 
 export function TimerDisplay({ timeLeft, className }: TimerDisplayProps) {
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
+  const isOvertime = timeLeft < 0;
+  const absTime = Math.abs(timeLeft);
+  const minutes = Math.floor(absTime / 60);
+  const seconds = absTime % 60;
 
   return (
-    <div className={cn("text-8xl font-bold font-mono tracking-tighter tabular-nums", className)}>
+    <div className={cn(
+      "text-8xl font-bold font-mono tracking-tighter tabular-nums transition-colors duration-500",
+      isOvertime ? "text-primary animate-pulse" : "text-foreground",
+      className
+    )}>
+      {isOvertime && <span className="text-6xl mr-2">+</span>}
       {minutes.toString().padStart(2, "0")}:{seconds.toString().padStart(2, "0")}
     </div>
   );

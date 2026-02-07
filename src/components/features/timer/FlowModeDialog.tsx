@@ -5,44 +5,48 @@ import { Button } from "@/components/ui/Button";
 
 interface FlowModeDialogProps {
   isOpen: boolean;
+  timeLeft: number;
   onTakeBreak: () => void;
-  onExtend: () => void;
   onFinish: () => void;
 }
 
-export function FlowModeDialog({ isOpen, onTakeBreak, onExtend, onFinish }: FlowModeDialogProps) {
+export function FlowModeDialog({ isOpen, timeLeft, onTakeBreak, onFinish }: FlowModeDialogProps) {
+  const absTime = Math.abs(timeLeft);
+  const minutes = Math.floor(absTime / 60);
+  const seconds = absTime % 60;
+  const timeString = `+${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onFinish} // 外側クリック時は「終了」扱い
+      onClose={onFinish}
       title="Work Session Complete! 🎉"
-      description="Great job staying focused. What would you like to do next?"
+      description="You've entered bonus focus time. Keep it up or take a well-deserved rest."
     >
-      <div className="flex flex-col gap-3 py-4">
-        <Button 
-          variant="secondary" 
-          size="lg" 
-          onClick={onTakeBreak}
-          className="w-full text-lg h-14"
-        >
-          ☕ Take a Break
-        </Button>
-        <Button 
-          variant="primary" 
-          size="lg" 
-          onClick={onExtend}
-          className="w-full text-lg h-14"
-        >
-          🔥 Extend Work (+5 min)
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="md" 
-          onClick={onFinish}
-          className="w-full text-muted-foreground"
-        >
-          Done for now
-        </Button>
+      <div className="flex flex-col items-center gap-6 py-4">
+        {/* ダイアログ内タイマー表示 - さらに控えめに */}
+        <div className="text-3xl font-semibold font-mono text-zinc-500 dark:text-zinc-400 tabular-nums">
+          {timeString}
+        </div>
+
+        <div className="flex flex-col gap-3 w-full">
+          <Button 
+            variant="secondary" 
+            size="lg" 
+            onClick={onTakeBreak}
+            className="w-full text-lg h-14"
+          >
+            ☕ Take a Break
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="md" 
+            onClick={onFinish}
+            className="w-full text-muted-foreground"
+          >
+            Done for now
+          </Button>
+        </div>
       </div>
     </Modal>
   );

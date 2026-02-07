@@ -39,7 +39,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
       <div className="space-y-6 py-4">
         {/* Time Settings */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium leading-none">Time (minutes)</h3>
+          <h3 className="text-sm font-medium leading-none text-center">Time (minutes)</h3>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-xs text-muted-foreground">Work</label>
@@ -79,7 +79,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
 
         {/* Auto Start Settings */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium leading-none">Automation</h3>
+          <h3 className="text-sm font-medium leading-none text-center">Automation</h3>
           <div className="flex items-center justify-between">
             <span className="text-sm">Auto Start Breaks</span>
             <button

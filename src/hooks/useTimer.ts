@@ -18,24 +18,25 @@ export const DEFAULT_SETTINGS: TimerSettings = {
   autoStartWork: false,
 };
 
-export function useTimer(settings: TimerSettings = DEFAULT_SETTINGS, onComplete?: (mode: TimerMode) => void) {
+export function useTimer(settings: TimerSettings = DEFAULT_SETTINGS) {
   const [mode, setMode] = useState<TimerMode>('work');
   const targetTime = settings[mode];
   const [timeLeft, setTimeLeft] = useState(targetTime);
   const [isActive, setIsActive] = useState(false);
+  
+  // 設定変更（targetTimeの変更）を検知してステートを調整する
+  // refs ではなく state を使うことで、レンダー中の安全な更新を実現（React公式推奨パターン）
   const [prevTargetTime, setPrevTargetTime] = useState(targetTime);
-
-  const startTimeRef = useRef<number | null>(null);
-  const initialTimeLeftRef = useRef<number>(targetTime);
-  const timerIdRef = useRef<NodeJS.Timeout | null>(null);
-
-  // 設定が変更されたら残り時間を更新（タイマーが動いていない時のみ）
   if (prevTargetTime !== targetTime) {
     setPrevTargetTime(targetTime);
     if (!isActive) {
       setTimeLeft(targetTime);
     }
   }
+
+  const startTimeRef = useRef<number | null>(null);
+  const initialTimeLeftRef = useRef<number>(targetTime);
+  const timerIdRef = useRef<NodeJS.Timeout | null>(null);
 
   const switchMode = useCallback((newMode: TimerMode) => {
     setMode(newMode);
@@ -55,11 +56,10 @@ export function useTimer(settings: TimerSettings = DEFAULT_SETTINGS, onComplete?
   }, [mode, settings]);
 
   const start = useCallback(() => {
-    if (isActive || timeLeft <= 0) return;
     setIsActive(true);
     startTimeRef.current = Date.now();
     initialTimeLeftRef.current = timeLeft;
-  }, [isActive, timeLeft]);
+  }, [timeLeft]);
 
   const pause = useCallback(() => {
     if (!isActive) return;
@@ -76,28 +76,14 @@ export function useTimer(settings: TimerSettings = DEFAULT_SETTINGS, onComplete?
     }
   }, []);
 
-  const latestStateRef = useRef({ mode, onComplete });
-  useEffect(() => {
-    latestStateRef.current = { mode, onComplete };
-  });
-
   const tick = useCallback(() => {
     if (startTimeRef.current === null) return;
-    const { mode, onComplete } = latestStateRef.current;
     
     const now = Date.now();
     const elapsed = Math.floor((now - startTimeRef.current) / 1000);
     const newTimeLeft = initialTimeLeftRef.current - elapsed;
     
-    if (newTimeLeft <= 0) {
-      setTimeLeft(0);
-      setIsActive(false);
-      startTimeRef.current = null;
-      if (timerIdRef.current) clearInterval(timerIdRef.current);
-      if (onComplete) onComplete(mode);
-    } else {
-      setTimeLeft(newTimeLeft);
-    }
+    setTimeLeft(newTimeLeft);
   }, []);
 
   useEffect(() => {

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useSound from 'use-sound';
-import { useTimer, DEFAULT_SETTINGS, TimerSettings, TimerMode } from '@/hooks/useTimer';
+import { useTimer, DEFAULT_SETTINGS, TimerSettings } from '@/hooks/useTimer';
 import { TimerDisplay } from '@/components/features/timer/TimerDisplay';
 import { TimerProgress } from '@/components/features/timer/TimerProgress';
 import { TimerControls } from '@/components/features/timer/TimerControls';
@@ -37,32 +37,43 @@ export default function Home() {
     pause,
     reset,
     switchMode,
-    extendTime,
-  } = useTimer(settings, (finishedMode) => handleTimerComplete(finishedMode));
+  } = useTimer(settings);
 
-  const handleTimerComplete = (finishedMode: TimerMode) => {
-    playAlarm();
-    
-    if (finishedMode === 'work') {
-      if (settings.autoStartBreaks) {
-        // 自動開始ONの場合：即座に休憩へ
-        switchMode('shortBreak');
-        setTimeout(start, 100);
+  // タイマー終了（0到達）の監視
+  const hasTriggeredComplete = useRef(false);
+
+  useEffect(() => {
+    // 0になった瞬間を1回だけ検知
+    if (timeLeft <= 0 && !hasTriggeredComplete.current && isActive) {
+      hasTriggeredComplete.current = true;
+      playAlarm();
+
+      if (mode === 'work') {
+        if (settings.autoStartBreaks) {
+          switchMode('shortBreak');
+          // 自動開始の場合は hasTriggeredComplete をリセット
+          hasTriggeredComplete.current = false;
+        } else {
+          // 自動開始OFFならダイアログを表示（タイマーは裏で進み続ける）
+          setIsFlowModeOpen(true);
+        }
       } else {
-        // 自動開始OFFの場合：ダイアログを表示
-        setIsFlowModeOpen(true);
-      }
-    } else {
-      // 休憩終了時
-      if (settings.autoStartWork) {
-        switchMode('work');
-        setTimeout(start, 100);
-      } else {
-        // 休憩終了後は待機（または通知のみ）
-        switchMode('work');
+        if (settings.autoStartWork) {
+          switchMode('work');
+          hasTriggeredComplete.current = false;
+        } else {
+          switchMode('work');
+          pause(); // 休憩終了時は止める
+          hasTriggeredComplete.current = false;
+        }
       }
     }
-  };
+
+    // タイマーがリセットされたり、正の値に戻ったらフラグをリセット
+    if (timeLeft > 0) {
+      hasTriggeredComplete.current = false;
+    }
+  }, [timeLeft, mode, settings, playAlarm, isActive, switchMode, pause]);
 
   const saveSettings = (newSettings: TimerSettings) => {
     setSettings(newSettings);
@@ -72,13 +83,7 @@ export default function Home() {
   const handleTakeBreak = () => {
     setIsFlowModeOpen(false);
     switchMode('shortBreak');
-    setTimeout(start, 100);
-  };
-
-  const handleExtend = () => {
-    setIsFlowModeOpen(false);
-    extendTime(5 * 60); // 5分延長
-    setTimeout(start, 100);
+    start();
   };
 
   const handleFinish = () => {
@@ -88,9 +93,11 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const isOvertime = timeLeft < 0;
+    const absTime = Math.abs(timeLeft);
+    const minutes = Math.floor(absTime / 60);
+    const seconds = absTime % 60;
+    const timeString = `${isOvertime ? '+' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     document.title = `${timeString} - Pomoru`;
   }, [timeLeft]);
 
@@ -126,8 +133,8 @@ export default function Home() {
 
       <FlowModeDialog
         isOpen={isFlowModeOpen}
+        timeLeft={timeLeft}
         onTakeBreak={handleTakeBreak}
-        onExtend={handleExtend}
         onFinish={handleFinish}
       />
     </main>
