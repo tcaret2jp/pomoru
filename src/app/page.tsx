@@ -9,6 +9,7 @@ import { TimerControls } from '@/components/features/timer/TimerControls';
 import { ModeSwitcher } from '@/components/features/timer/ModeSwitcher';
 import { SettingsModal } from '@/components/features/settings/SettingsModal';
 import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function Home() {
   const [settings, setSettings] = useState<TimerSettings>(() => {
@@ -102,7 +103,11 @@ export default function Home() {
   }, [timeLeft]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="flex flex-col items-center gap-8 w-full max-w-md">
         <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
         

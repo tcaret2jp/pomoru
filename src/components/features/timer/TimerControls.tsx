@@ -18,7 +18,7 @@ export function TimerControls({ isActive, onToggle, onReset, onOpenSettings, var
           size="lg"
           onClick={onReset}
           aria-label="Reset Timer"
-          className="h-14 w-14 rounded-full border border-zinc-200 bg-zinc-50"
+          className="h-14 w-14 rounded-full border border-border bg-card shadow-sm hover:bg-muted text-foreground"
         >
           <span className="text-xl">🔄</span>
         </Button>
@@ -37,14 +37,14 @@ export function TimerControls({ isActive, onToggle, onReset, onOpenSettings, var
         </span>
       </Button>
 
-      {/* 右側: 設定ボタン (リセットボタンと線対称) */}
+      {/* 右側: 設定ボタン */}
       <div className="flex justify-start w-20">
         <Button
           variant="ghost"
           size="lg"
           onClick={onOpenSettings}
           aria-label="Open Settings"
-          className="h-14 w-14 rounded-full border border-zinc-200 bg-zinc-50"
+          className="h-14 w-14 rounded-full border border-border bg-card shadow-sm hover:bg-muted text-foreground"
         >
           <span className="text-xl">⚙️</span>
         </Button>

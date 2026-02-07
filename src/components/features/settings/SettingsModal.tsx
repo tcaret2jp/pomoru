@@ -17,7 +17,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
     if (!isNaN(numValue)) {
       onSave({
         ...settings,
-        [key]: numValue * 60, // 秒に変換
+        [key]: numValue * 60,
       });
     }
   };
@@ -42,36 +42,36 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
           <h3 className="text-sm font-medium leading-none text-center">Time (minutes)</h3>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-xs text-muted-foreground">Work</label>
+              <label className="text-xs text-muted-foreground block text-center">Work</label>
               <input
                 type="number"
                 min="1"
                 max="60"
                 value={settings.work / 60}
                 onChange={(e) => handleTimeChange('work', e.target.value)}
-                className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-800"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-center focus:ring-2 focus:ring-primary focus:outline-none transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs text-muted-foreground">Short</label>
+              <label className="text-xs text-muted-foreground block text-center">Short</label>
               <input
                 type="number"
                 min="1"
                 max="60"
                 value={settings.shortBreak / 60}
                 onChange={(e) => handleTimeChange('shortBreak', e.target.value)}
-                className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-800"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-center focus:ring-2 focus:ring-secondary focus:outline-none transition-colors"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs text-muted-foreground">Long</label>
+              <label className="text-xs text-muted-foreground block text-center">Long</label>
               <input
                 type="number"
                 min="1"
                 max="60"
                 value={settings.longBreak / 60}
                 onChange={(e) => handleTimeChange('longBreak', e.target.value)}
-                className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-800"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-center focus:ring-2 focus:ring-secondary focus:outline-none transition-colors"
               />
             </div>
           </div>
@@ -85,11 +85,11 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
             <button
               onClick={() => handleToggle('autoStartBreaks')}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.autoStartBreaks ? 'bg-secondary' : 'bg-zinc-200 dark:bg-zinc-800'
+                settings.autoStartBreaks ? 'bg-secondary' : 'bg-muted'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                className={`inline-block h-4 w-4 transform rounded-full bg-background transition-transform shadow-sm ${
                   settings.autoStartBreaks ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
@@ -100,11 +100,11 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
             <button
               onClick={() => handleToggle('autoStartWork')}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.autoStartWork ? 'bg-primary' : 'bg-zinc-200 dark:bg-zinc-800'
+                settings.autoStartWork ? 'bg-primary' : 'bg-muted'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                className={`inline-block h-4 w-4 transform rounded-full bg-background transition-transform shadow-sm ${
                   settings.autoStartWork ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
