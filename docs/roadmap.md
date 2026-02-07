@@ -95,9 +95,17 @@
 - [x] `src/app/page.tsx` に各コンポーネントを配置
 - [x] `useTimer` フックをページレベルで呼び出し、各コンポーネントに State と Handler を渡す
 - [ ] ブラウザで表示確認
-  - [ ] カウントダウンが正確か
-  - [ ] バックグラウンドにして戻った時に時間が飛んでいるか (正しい挙動)
+  - [x] カウントダウンが正確か
+  - [x] バックグラウンドにして戻った時に時間が飛んでいるか (正しい挙動)
   - [ ] 音が鳴るか
+
+### 1.7 設定 UI 実装 (Local State)
+- [ ] **設定モーダルの作成 (`src/components/features/settings/SettingsModal.tsx`)**
+  - [ ] 各モード（Work, Short, Long）の時間を入力するフィールドの作成
+  - [ ] タイマーの自動開始設定（トグル）の追加
+- [ ] **タイマーロジックへの統合**
+  - [ ] `useTimer` に設定値を渡せるように拡張
+  - [ ] 設定変更時に即座にタイマーに反映される仕組みの実装
 
 ## Phase 2: Authentication & Database - ユーザー基盤
 
@@ -131,19 +139,17 @@
   - [ ] `signIn('google')` を呼ぶボタン
   - [ ] `useSession` でログイン状態ならアバターとログアウトボタンを表示
 
-### 2.3 設定機能の実装
+### 2.3 設定の同期と永続化
 - [ ] **Settings API 作成**
   - [ ] `src/app/api/settings/route.ts`
-  - [ ] `GET`: `prisma.settings.findUnique` (なければデフォルト値を返す)
-  - [ ] `PUT`: `prisma.settings.upsert` (バリデーション含む)
-- [ ] **設定モーダル (`src/components/features/settings/SettingsModal.tsx`)**
-  - [ ] フォーム実装 (React Hook Form 推奨)
-  - [ ] 各時間の入力フィールド (数値のみ)
-  - [ ] トグルスイッチ
+  - [ ] `GET`: `prisma.settings.findUnique` (ログイン時のみ)
+  - [ ] `PUT`: `prisma.settings.upsert`
 - [ ] **設定同期フック (`useSettings`)**
   - [ ] `SWR` (`npm install swr`) を導入
   - [ ] ログイン時: APIから fetch / mutate
   - [ ] 未ログイン時: LocalStorage と同期 (`useLocalStorage` フック作成)
+- [ ] **UI への結合**
+  - [ ] `SettingsModal` を `useSettings` を使うようにリファクタリング
 
 ## Phase 3: Notion Integration - 外部連携
 

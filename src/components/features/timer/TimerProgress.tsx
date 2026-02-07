@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
-import { TimerMode, TIMER_SETTINGS } from "@/hooks/useTimer";
+import { TimerMode } from "@/hooks/useTimer";
 
 interface TimerProgressProps {
   timeLeft: number;
+  totalTime: number; // 動的に受け取るように変更
   mode: TimerMode;
   size?: number;
   strokeWidth?: number;
@@ -12,13 +13,13 @@ interface TimerProgressProps {
 
 export function TimerProgress({ 
   timeLeft, 
+  totalTime,
   mode, 
   size = 320, 
   strokeWidth = 12,
   children,
   className
 }: TimerProgressProps) {
-  const totalTime = TIMER_SETTINGS[mode];
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const progress = timeLeft / totalTime;

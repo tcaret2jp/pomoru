@@ -14,13 +14,13 @@ export function ModeSwitcher({ currentMode, onSwitch }: ModeSwitcherProps) {
   ];
 
   return (
-    <div className="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-full">
+    <div className="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-full w-full max-w-sm">
       {modes.map((mode) => (
         <button
           key={mode.id}
           onClick={() => onSwitch(mode.id)}
           className={cn(
-            "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+            "flex-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
             currentMode === mode.id
               ? "bg-white dark:bg-zinc-900 text-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"

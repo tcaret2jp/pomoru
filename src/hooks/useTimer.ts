@@ -2,37 +2,55 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 export type TimerMode = 'work' | 'shortBreak' | 'longBreak';
 
-export const TIMER_SETTINGS = {
+export interface TimerSettings {
+  work: number;
+  shortBreak: number;
+  longBreak: number;
+  autoStartBreaks: boolean;
+  autoStartWork: boolean;
+}
+
+export const DEFAULT_SETTINGS: TimerSettings = {
   work: 25 * 60,
   shortBreak: 5 * 60,
   longBreak: 15 * 60,
+  autoStartBreaks: false,
+  autoStartWork: false,
 };
 
-export function useTimer(onComplete?: () => void) {
+export function useTimer(settings: TimerSettings = DEFAULT_SETTINGS, onComplete?: () => void) {
   const [mode, setMode] = useState<TimerMode>('work');
-  const [timeLeft, setTimeLeft] = useState(TIMER_SETTINGS.work);
+  const [timeLeft, setTimeLeft] = useState(settings.work);
   const [isActive, setIsActive] = useState(false);
   
   const startTimeRef = useRef<number | null>(null);
-  const initialTimeLeftRef = useRef<number>(TIMER_SETTINGS.work);
+  const initialTimeLeftRef = useRef<number>(settings.work);
   const timerIdRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 設定が変更されたら残り時間を更新（タイマーが動いていない時のみ）
+  useEffect(() => {
+    if (!isActive) {
+      setTimeLeft(settings[mode]);
+      initialTimeLeftRef.current = settings[mode];
+    }
+  }, [settings, mode, isActive]);
 
   const switchMode = useCallback((newMode: TimerMode) => {
     setMode(newMode);
     setIsActive(false);
-    setTimeLeft(TIMER_SETTINGS[newMode]);
+    setTimeLeft(settings[newMode]);
     startTimeRef.current = null;
-    initialTimeLeftRef.current = TIMER_SETTINGS[newMode];
+    initialTimeLeftRef.current = settings[newMode];
     if (timerIdRef.current) clearInterval(timerIdRef.current);
-  }, []);
+  }, [settings]);
 
   const reset = useCallback(() => {
     setIsActive(false);
-    setTimeLeft(TIMER_SETTINGS[mode]);
+    setTimeLeft(settings[mode]);
     startTimeRef.current = null;
-    initialTimeLeftRef.current = TIMER_SETTINGS[mode];
+    initialTimeLeftRef.current = settings[mode];
     if (timerIdRef.current) clearInterval(timerIdRef.current);
-  }, [mode]);
+  }, [mode, settings]);
 
   const start = useCallback(() => {
     if (isActive || timeLeft <= 0) return;

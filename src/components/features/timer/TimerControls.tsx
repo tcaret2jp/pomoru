@@ -4,10 +4,11 @@ interface TimerControlsProps {
   isActive: boolean;
   onToggle: () => void;
   onReset: () => void;
+  onOpenSettings: () => void;
   variant?: 'primary' | 'secondary';
 }
 
-export function TimerControls({ isActive, onToggle, onReset, variant = 'primary' }: TimerControlsProps) {
+export function TimerControls({ isActive, onToggle, onReset, onOpenSettings, variant = 'primary' }: TimerControlsProps) {
   return (
     <div className="flex items-center justify-center gap-4 w-full">
       {/* 左側: リセットボタン */}
@@ -41,7 +42,7 @@ export function TimerControls({ isActive, onToggle, onReset, variant = 'primary'
         <Button
           variant="ghost"
           size="lg"
-          onClick={() => alert('Settings clicked!')} // 後ほど設定モーダルを開く処理に置き換え
+          onClick={onOpenSettings}
           aria-label="Open Settings"
           className="h-14 w-14 rounded-full border border-zinc-200 bg-zinc-50"
         >
