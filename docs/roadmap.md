@@ -40,60 +40,60 @@
   - [x] `cn` 関数を実装 (clsx と tailwind-merge を使用)
 
 ### 1.3 Atomic コンポーネント実装
-- [ ] **ボタンコンポーネント (`src/components/ui/Button.tsx`)**
-  - [ ] Props定義: `variant` ('primary' | 'secondary' | 'ghost'), `size` ('sm' | 'md' | 'lg')
-  - [ ] `button` 要素をラップし、`cn` でクラスを動的に適用
-  - [ ] ホバーエフェクト、アクティブエフェクトの実装
-- [ ] **カードコンポーネント (`src/components/ui/Card.tsx`)**
-  - [ ] 単純な `div` ラッパー。影、角丸、背景色 (白/黒) を適用
-- [ ] **モーダルコンポーネント (`src/components/ui/Modal.tsx`)**
-  - [ ] `Radix UI Dialog` (または自作ポータル) を使用したベース実装
-  - [ ] 背景のオーバーレイと、中央配置のコンテナ
-  - [ ] `isOpen`, `onClose` Props の定義
+- [x] **ボタンコンポーネント (`src/components/ui/Button.tsx`)**
+  - [x] Props定義: `variant` ('primary' | 'secondary' | 'ghost'), `size` ('sm' | 'md' | 'lg')
+  - [x] `button` 要素をラップし、`cn` でクラスを動的に適用
+  - [x] ホバーエフェクト、アクティブエフェクトの実装
+- [x] **カードコンポーネント (`src/components/ui/Card.tsx`)**
+  - [x] 単純な `div` ラッパー。影、角丸、背景色 (白/黒) を適用
+- [x] **モーダルコンポーネント (`src/components/ui/Modal.tsx`)**
+  - [x] `Radix UI Dialog` (または自作ポータル) を使用したベース実装
+  - [x] 背景のオーバーレイと、中央配置のコンテナ
+  - [x] `isOpen`, `onClose` Props の定義
 
 ### 1.4 タイマーロジック (`src/hooks/useTimer.ts`)
-- [ ] **型定義**
-  - [ ] `TimerMode = 'work' | 'shortBreak' | 'longBreak'`
-- [ ] **State 定義**
-  - [ ] `timeLeft` (number, 秒単位)
-  - [ ] `isActive` (boolean)
-  - [ ] `mode` (TimerMode)
-- [ ] **アクション実装**
-  - [ ] `start()`: `isActive` を true にし、開始時刻 (`startTime`) を `Date.now()` で記録
-  - [ ] `pause()`: `isActive` を false にし、残り時間を保持
-  - [ ] `reset()`: モードに応じた初期時間にリセット
-  - [ ] `switchMode(mode)`: モード変更と時間リセット
-- [ ] **ティック処理 (useEffect)**
-  - [ ] `setInterval` (100ms 間隔)
-  - [ ] 現在時刻 - `startTime` を計算し、予想される残り時間を算出（ドリフト補正）
-  - [ ] 残り時間が 0 になったら `onComplete` コールバックを実行し、音を鳴らす
-- [ ] **バックグラウンド復帰対応 (useEffect)**
-  - [ ] `document.visibilityState` を監視
-  - [ ] `visible` になった瞬間、再度 `Date.now()` を用いて `timeLeft` を再計算・補正
+- [x] **型定義**
+  - [x] `TimerMode = 'work' | 'shortBreak' | 'longBreak'`
+- [x] **State 定義**
+  - [x] `timeLeft` (number, 秒単位)
+  - [x] `isActive` (boolean)
+  - [x] `mode` (TimerMode)
+- [x] **アクション実装**
+  - [x] `start()`: `isActive` を true にし、開始時刻 (`startTime`) を `Date.now()` で記録
+  - [x] `pause()`: `isActive` を false にし、残り時間を保持
+  - [x] `reset()`: モードに応じた初期時間にリセット
+  - [x] `switchMode(mode)`: モード変更と時間リセット
+- [x] **ティック処理 (useEffect)**
+  - [x] `setInterval` (100ms 間隔)
+  - [x] 現在時刻 - `startTime` を計算し、予想される残り時間を算出（ドリフト補正）
+  - [x] 残り時間が 0 になったら `onComplete` コールバックを実行し、音を鳴らす
+- [x] **バックグラウンド復帰対応 (useEffect)**
+  - [x] `document.visibilityState` を監視
+  - [x] `visible` になった瞬間、再度 `Date.now()` を用いて `timeLeft` を再計算・補正
 
 ### 1.5 タイマー UI 実装 (`src/components/features/timer/`)
-- [ ] **TimerDisplay.tsx**
-  - [ ] Props: `timeLeft` (seconds)
-  - [ ] `Math.floor(timeLeft / 60)` と `timeLeft % 60` で分・秒を表示
-  - [ ] ゼロ埋め処理 (`padStart(2, '0')`)
-  - [ ] `font-mono` クラス適用
-- [ ] **TimerProgress.tsx** (円形プログレス)
-  - [ ] SVG の `<circle>` を2つ重ねる (背景用と進行用)
-  - [ ] `radius`, `strokeWidth` を定義
-  - [ ] `circumference` (円周) を計算
-  - [ ] `timeLeft / totalTime` から `strokeDashoffset` を動的に計算してアニメーションさせる
-- [ ] **TimerControls.tsx**
-  - [ ] Play/Pause ボタン (トグル)
-  - [ ] Reset ボタン
-  - [ ] アイコン (`Play`, `Pause`, `RotateCcw` from lucide-react) の配置
-- [ ] **ModeSwitcher.tsx**
-  - [ ] 3つのタブボタンを表示
-  - [ ] 現在の `mode` に応じてアクティブスタイル (背景色変更) を適用
-  - [ ] クリック時に `switchMode` を呼び出し
+- [x] **TimerDisplay.tsx**
+  - [x] Props: `timeLeft` (seconds)
+  - [x] `Math.floor(timeLeft / 60)` と `timeLeft % 60` で分・秒を表示
+  - [x] ゼロ埋め処理 (`padStart(2, '0')`)
+  - [x] `font-mono` クラス適用
+- [x] **TimerProgress.tsx** (円形プログレス)
+  - [x] SVG の `<circle>` を2つ重ねる (背景用と進行用)
+  - [x] `radius`, `strokeWidth` を定義
+  - [x] `circumference` (円周) を計算
+  - [x] `timeLeft / totalTime` から `strokeDashoffset` を動的に計算してアニメーションさせる
+- [x] **TimerControls.tsx**
+  - [x] Play/Pause ボタン (トグル)
+  - [x] Reset ボタン
+  - [x] アイコン (`Play`, `Pause`, `RotateCcw` from lucide-react) の配置
+- [x] **ModeSwitcher.tsx**
+  - [x] 3つのタブボタンを表示
+  - [x] 現在の `mode` に応じてアクティブスタイル (背景色変更) を適用
+  - [x] クリック時に `switchMode` を呼び出し
 
 ### 1.6 統合と動作確認
-- [ ] `src/app/page.tsx` に各コンポーネントを配置
-- [ ] `useTimer` フックをページレベルで呼び出し、各コンポーネントに State と Handler を渡す
+- [x] `src/app/page.tsx` に各コンポーネントを配置
+- [x] `useTimer` フックをページレベルで呼び出し、各コンポーネントに State と Handler を渡す
 - [ ] ブラウザで表示確認
   - [ ] カウントダウンが正確か
   - [ ] バックグラウンドにして戻った時に時間が飛んでいるか (正しい挙動)
