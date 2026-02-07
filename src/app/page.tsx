@@ -10,6 +10,8 @@ import { ModeSwitcher } from '@/components/features/timer/ModeSwitcher';
 import { SettingsModal } from '@/components/features/settings/SettingsModal';
 import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import Link from 'next/link';
+import { Star } from 'lucide-react';
 
 export default function Home() {
   const [settings, setSettings] = useState<TimerSettings>(() => {
@@ -142,6 +144,17 @@ export default function Home() {
         onTakeBreak={handleTakeBreak}
         onFinish={handleFinish}
       />
+
+      {/* Early Access Link */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+        <Link 
+          href="/early-access" 
+          className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+        >
+          <Star className="w-3 h-3 fill-current" />
+          Early Adopter Program
+        </Link>
+      </div>
     </main>
   );
 }
