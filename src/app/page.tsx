@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import useSound from 'use-sound';
-import { useTimer, DEFAULT_SETTINGS, TimerSettings } from '@/hooks/useTimer';
+import { useTimer, DEFAULT_SETTINGS, TimerSettings, TimerMode } from '@/hooks/useTimer';
 import { TimerDisplay } from '@/components/features/timer/TimerDisplay';
 import { TimerProgress } from '@/components/features/timer/TimerProgress';
 import { TimerControls } from '@/components/features/timer/TimerControls';
 import { ModeSwitcher } from '@/components/features/timer/ModeSwitcher';
 import { SettingsModal } from '@/components/features/settings/SettingsModal';
+import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 
 export default function Home() {
   const [settings, setSettings] = useState<TimerSettings>(() => {
@@ -25,14 +26,8 @@ export default function Home() {
   });
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isFlowModeOpen, setIsFlowModeOpen] = useState(false);
   const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
-  
-  // マウント後の読み込み useEffect は不要になったので削除
-  
-  const saveSettings = (newSettings: TimerSettings) => {
-    setSettings(newSettings);
-    localStorage.setItem('pomoru-settings', JSON.stringify(newSettings));
-  };
 
   const {
     timeLeft,
@@ -42,7 +37,55 @@ export default function Home() {
     pause,
     reset,
     switchMode,
-  } = useTimer(settings, playAlarm);
+    extendTime,
+  } = useTimer(settings, (finishedMode) => handleTimerComplete(finishedMode));
+
+  const handleTimerComplete = (finishedMode: TimerMode) => {
+    playAlarm();
+    
+    if (finishedMode === 'work') {
+      if (settings.autoStartBreaks) {
+        // 自動開始ONの場合：即座に休憩へ
+        switchMode('shortBreak');
+        setTimeout(start, 100);
+      } else {
+        // 自動開始OFFの場合：ダイアログを表示
+        setIsFlowModeOpen(true);
+      }
+    } else {
+      // 休憩終了時
+      if (settings.autoStartWork) {
+        switchMode('work');
+        setTimeout(start, 100);
+      } else {
+        // 休憩終了後は待機（または通知のみ）
+        switchMode('work');
+      }
+    }
+  };
+
+  const saveSettings = (newSettings: TimerSettings) => {
+    setSettings(newSettings);
+    localStorage.setItem('pomoru-settings', JSON.stringify(newSettings));
+  };
+
+  const handleTakeBreak = () => {
+    setIsFlowModeOpen(false);
+    switchMode('shortBreak');
+    setTimeout(start, 100);
+  };
+
+  const handleExtend = () => {
+    setIsFlowModeOpen(false);
+    extendTime(5 * 60); // 5分延長
+    setTimeout(start, 100);
+  };
+
+  const handleFinish = () => {
+    setIsFlowModeOpen(false);
+    switchMode('work');
+    reset();
+  };
 
   useEffect(() => {
     const minutes = Math.floor(timeLeft / 60);
@@ -79,6 +122,13 @@ export default function Home() {
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}
         onSave={saveSettings}
+      />
+
+      <FlowModeDialog
+        isOpen={isFlowModeOpen}
+        onTakeBreak={handleTakeBreak}
+        onExtend={handleExtend}
+        onFinish={handleFinish}
       />
     </main>
   );

@@ -100,12 +100,19 @@
   - [ ] 音が鳴るか
 
 ### 1.7 設定 UI 実装 (Local State)
-- [ ] **設定モーダルの作成 (`src/components/features/settings/SettingsModal.tsx`)**
-  - [ ] 各モード（Work, Short, Long）の時間を入力するフィールドの作成
-  - [ ] タイマーの自動開始設定（トグル）の追加
-- [ ] **タイマーロジックへの統合**
-  - [ ] `useTimer` に設定値を渡せるように拡張
-  - [ ] 設定変更時に即座にタイマーに反映される仕組みの実装
+- [x] **設定モーダルの作成 (`src/components/features/settings/SettingsModal.tsx`)**
+  - [x] 各モード（Work, Short, Long）の時間を入力するフィールドの作成
+  - [x] タイマーの自動開始設定（トグル）の追加
+- [x] **タイマーロジックへの統合**
+  - [x] `useTimer` に設定値を渡せるように拡張
+  - [x] 設定変更時に即座にタイマーに反映される仕組みの実装
+
+### 1.8 集中継続 (Flow Mode) ダイアログの実装
+- [x] **ダイアログコンポーネントの作成 (`src/components/features/timer/FlowModeDialog.tsx`)**
+  - [x] 「休憩する」「延長する (+5分)」「終了する」の3つのボタンを配置
+- [x] **タイマー終了ロジックの拡張**
+  - [x] Work終了時に自動開始設定がOFFの場合、ダイアログを表示
+  - [x] 「延長」クリック時に現在時間に5分加算して再開する処理の実装
 
 ## Phase 2: Authentication & Database - ユーザー基盤
 
