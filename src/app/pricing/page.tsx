@@ -205,6 +205,8 @@ export default function PricingPage() {
             <Button disabled variant="secondary" className="relative z-10 w-full rounded-2xl h-12 text-xs font-black uppercase tracking-widest bg-muted text-muted-foreground">
               Coming Soon
             </Button>
+
+
           </Card>
 
         </div>

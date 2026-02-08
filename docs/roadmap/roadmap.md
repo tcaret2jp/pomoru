@@ -2,37 +2,264 @@
 
 `requirements.md` および `design.md` に基づく、実装手順書レベルまで分解されたロードマップ。
 
-## [v1.0] Phase 1: MVP (Core Timer) - 完了
-- [x] **1.1 〜 1.10**: プロジェクト初期化、タイマーロジック、デザインシステム、ダークモード完全対応。
-- [x] **1.11**: アーリーアダプター専用 LP (`/early-access`) の作成。
-- [x] **1.12**: 設定画面の UI/UX 改善（Description 削除、Mono体入力）。
-- [x] **1.13**: アーリーアダプター限定バッジ（👑）の最下部中央配置。
-- [x] **1.14**: 設定画面のアカウント情報セクション実装。
-- [x] **1.15**: オンボーディング（Welcome ポップアップ & About ページ）実装。
-- [x] **1.16**: ログイン専用ページ (`/auth/signin`) の構築と導線の共通化。
+## Phase 1: MVP (Core Timer) - 基本機能の実装
 
-## [v1.1] Phase 2: UI Expansion & User Base - 進行中
+### 1.1 プロジェクト初期化とクリーンアップ
+- [x] **不要ファイルの削除と初期化**
+  - [x] `src/app/page.module.css` を削除
+  - [x] `public/` 以下の `next.svg`, `vercel.svg`, `window.svg`, `globe.svg`, `file.svg` を削除
+  - [x] `src/app/globals.css` の内容を消去し、Tailwind directives (`@tailwind base;` 等) 3行のみにする
+  - [x] `src/app/page.tsx` を編集し、既存のコードを削除して `<main className="flex min-h-screen flex-col items-center justify-center">Pomoru</main>` だけにする
+  - [x] `src/app/layout.tsx` の `metadata` を更新 (title: "Pomoru", description: "Simple Pomodoro Timer")
+- [x] **必須ライブラリのインストール**
+  - [x] `npm install lucide-react` (アイコン用)
+  - [x] `npm install clsx tailwind-merge` (クラス名結合用)
+  - [x] `npm install use-sound` (サウンド再生用)
+  - [x] `npm install -D prettier-plugin-tailwindcss` (Tailwind クラスの自動ソート用)
 
-### 2.1 データベース基盤 (完了)
-- [x] **Supabase / Prisma (v6) のセットアップ**
-- [x] **Google ログインの実装と特典付与ロジックの構築**
+### 1.2 デザインシステム基盤の構築
 
-### 2.2 ページ拡充 (Next Steps)
-- [x] **2.2.1 プラン案内ページ (`/pricing`)**: 
-  - 👑 Early Adopter の特別感と、将来プランの比較 UI。
-- [ ] **2.2.2 統計ダッシュボード UI (`/stats`)**: 
-  - 集中データの可視化（プレースホルダー）。
-- [x] **2.2.3 リーガルページ (`/privacy`, `/terms`)**:
-  - アプリの信頼性を高めるための規約ページ作成。
+- [x] **フォント設定 (`src/app/layout.tsx`)**
 
-### 2.3 設定の同期と永続化 (API実装)
-- [ ] **Settings API の作成**: DB への設定保存。
-- [ ] **同期ロジックの実装**: ログイン時の自動データ復元。
+  - [x] `next/font/google` から `Inter` と `JetBrains_Mono` をインポート
 
-## [v1.2] Phase 3: Monetization & Statistics (予定)
-- [ ] 統計記録ロジックの実装。
-- [ ] Stripe 統合。
+  - [x] `Inter` を `variable: --font-inter` として定義
 
-## [v2.0] Phase 4: Polish & Launch (予定)
-- [ ] PWA 対応。
-- [ ] 本番デプロイ。
+  - [x] `JetBrains_Mono` を `variable: --font-mono` として定義
+
+  - [x] `<body>` タグの `className` に変数を適用
+
+- [x] **Tailwind 設定 (`src/app/globals.css` - Tailwind v4)**
+
+  - [x] `@theme` ブロックに `design.md` のカラーパレットを追加
+
+  - [x] `fontFamily` に `sans` (Inter) と `mono` (JetBrains Mono) を追加
+
+- [x] **ユーティリティ作成 (`src/lib/utils.ts`)**
+
+  - [x] `cn` 関数を実装 (clsx と tailwind-merge を使用)
+
+### 1.3 Atomic コンポーネント実装
+- [x] **ボタンコンポーネント (`src/components/ui/Button.tsx`)**
+  - [x] Props定義: `variant` ('primary' | 'secondary' | 'ghost'), `size` ('sm' | 'md' | 'lg')
+  - [x] `button` 要素をラップし、`cn` でクラスを動的に適用
+  - [x] ホバーエフェクト、アクティブエフェクトの実装
+- [x] **カードコンポーネント (`src/components/ui/Card.tsx`)**
+  - [x] 単純な `div` ラッパー。影、角丸、背景色 (白/黒) を適用
+- [x] **モーダルコンポーネント (`src/components/ui/Modal.tsx`)**
+  - [x] `Radix UI Dialog` (または自作ポータル) を使用したベース実装
+  - [x] 背景のオーバーレイと、中央配置のコンテナ
+  - [x] `isOpen`, `onClose` Props の定義
+
+### 1.4 タイマーロジック (`src/hooks/useTimer.ts`)
+- [x] **型定義**
+  - [x] `TimerMode = 'work' | 'shortBreak' | 'longBreak'`
+- [x] **State 定義**
+  - [x] `timeLeft` (number, 秒単位)
+  - [x] `isActive` (boolean)
+  - [x] `mode` (TimerMode)
+- [x] **アクション実装**
+  - [x] `start()`: `isActive` を true にし、開始時刻 (`startTime`) を `Date.now()` で記録
+  - [x] `pause()`: `isActive` を false にし、残り時間を保持
+  - [x] `reset()`: モードに応じた初期時間にリセット
+  - [x] `switchMode(mode)`: モード変更と時間リセット
+- [x] **ティック処理 (useEffect)**
+  - [x] `setInterval` (100ms 間隔)
+  - [x] 現在時刻 - `startTime` を計算し、予想される残り時間を算出（ドリフト補正）
+  - [x] 残り時間が 0 になったら `onComplete` コールバックを実行し、音を鳴らす
+- [x] **バックグラウンド復帰対応 (useEffect)**
+  - [x] `document.visibilityState` を監視
+  - [x] `visible` になった瞬間、再度 `Date.now()` を用いて `timeLeft` を再計算・補正
+
+### 1.5 タイマー UI 実装 (`src/components/features/timer/`)
+- [x] **TimerDisplay.tsx**
+  - [x] Props: `timeLeft` (seconds)
+  - [x] `Math.floor(timeLeft / 60)` と `timeLeft % 60` で分・秒を表示
+  - [x] ゼロ埋め処理 (`padStart(2, '0')`)
+  - [x] `font-mono` クラス適用
+- [x] **TimerProgress.tsx** (円形プログレス)
+  - [x] SVG の `<circle>` を2つ重ねる (背景用と進行用)
+  - [x] `radius`, `strokeWidth` を定義
+  - [x] `circumference` (円周) を計算
+  - [x] `timeLeft / totalTime` から `strokeDashoffset` を動的に計算してアニメーションさせる
+- [x] **TimerControls.tsx**
+  - [x] Play/Pause ボタン (トグル)
+  - [x] Reset ボタン
+  - [x] アイコン (`Play`, `Pause`, `RotateCcw` from lucide-react) の配置
+- [x] **ModeSwitcher.tsx**
+  - [x] 3つのタブボタンを表示
+  - [x] 現在の `mode` に応じてアクティブスタイル (背景色変更) を適用
+  - [x] クリック時に `switchMode` を呼び出し
+
+### 1.6 統合と動作確認
+- [x] `src/app/page.tsx` に各コンポーネントを配置
+- [x] `useTimer` フックをページレベルで呼び出し、各コンポーネントに State と Handler を渡す
+- [x] ブラウザで表示確認
+  - [x] カウントダウンが正確か
+  - [x] バックグラウンドにして戻った時に時間が飛んでいるか (正しい挙動)
+  - [ ] 音が鳴るか (ファイルの配置待ち)
+
+### 1.7 設定 UI 実装 (Local State)
+- [x] **設定モーダルの作成 (`src/components/features/settings/SettingsModal.tsx`)**
+  - [x] 各モード（Work, Short, Long）の時間を入力するフィールドの作成
+  - [x] タイマーの自動開始設定（トグル）の追加
+- [x] **タイマーロジックへの統合**
+  - [x] `useTimer` に設定値を渡せるように拡張
+  - [x] 設定変更時に即座にタイマーに反映される仕組みの実装
+
+### 1.8 集中継続 (Flow Mode) ダイアログの実装
+- [x] **ダイアログコンポーネントの作成 (`src/components/features/timer/FlowModeDialog.tsx`)**
+  - [x] 「休憩する」「終了する」のボタンを配置
+- [x] **タイマー終了ロジックの拡張**
+  - [x] Work終了時に自動開始設定がOFFの場合、ダイアログを表示
+  - [x] **ボーナスタイム (Overtime) 機能**: 0秒以降も止まらずにカウントアップ (+00:01...) するように拡張
+  - [x] ダイアログ内でのリアルタイムな経過時間表示
+
+### 1.9 デザインの洗練 (UI/UX Polish)
+- [x] **アイコンの絵文字化**: Lucide アイコンから視覚性と親しみやすさ重視の絵文字（🔄, ▶️, ⏸️, ⚙️）へ変更
+- [x] **レイアウトの対称性**: 操作パネルやモード切替ボタンを左右対称・等幅に調整
+- [x] **中央揃えの徹底**: モーダルのタイトルや設定項目を一貫して中央揃えに配置
+- [x] **アクセシビリティ**: 超過時間の Pulse アニメーションを削除し、落ち着いたデザインに調整
+
+### 1.10 ダークモードの完全対応
+- [x] **テーマエンジンの導入 (`next-themes`)**
+  - [x] OS設定への自動連動と、手動切り替え（☀️/🌙/🖥️）のサポート
+- [x] **カラーシステムの再定義**
+  - [x] ダークモード時の高コントラストな配色（#09090Bベース）の適用
+  - [x] 背景と同化しないためのボーダーとカード背景の最適化
+- [x] **UIコンポーネントのテーマ対応**
+  - [x] 全UI部品の一貫したダークモード表示
+
+### 1.11 アーリーアダプター専用 LP の作成
+- [x] **専用ページの実装 (`src/app/early-access/page.tsx`)**
+  - [x] Cron風の洗練されたミニマルデザインの採用
+  - [x] 特典（永続プレミアム）の訴求と、背景 Blur エフェクトの実装
+- [x] **メイン画面からの導線設置**
+  - [x] タイマー画面最下部に特別プログラムへのリンクを配置
+
+### 1.12 設定画面の UI/UX 改善
+- [x] **余計な説明文の削除**: 設定モーダルから Description を削除し、ミニマルな構成へ。
+- [x] **入力要素の最適化**: 数値入力フィールドのフォントを Mono 体にし、サイズと余白を拡大してタップ・クリックしやすく調整。
+- [x] **インタラクションの洗練**: トグルスイッチの背景アニメーションや、ホバーエフェクトの追加。
+
+### 1.13 アーリーアダプター限定バッジの実装
+- [x] **バッジ表示ロジックの追加**: ログインユーザーのプランが `EARLY_ACCESS` の場合、王冠（👑）アイコンを表示。
+- [x] **UI への統合**: タイマー画面の最下部に、誇りを感じられる洗練されたスタイルでバッジを配置。
+
+### 1.14 設定画面のアカウント情報セクション実装
+- [x] **ログイン状態の表示**: ユーザー名、メール、アバター、現在のプランを表示。
+- [ ] **認証操作**: ログアウトボタン、または未ログイン時のログイン誘導ボタンの配置。
+
+## Phase 2: Authentication & Database - ユーザー基盤
+
+### 2.1 データベース準備
+- [x] **Supabase プロジェクト作成**
+  - [x] データベース接続文字列（DATABASE_URL / DIRECT_URL）の取得
+  - [x] `.env` への設定完了
+- [x] **Prisma 初期化と設定**
+  - [x] `npm install prisma @prisma/client` (安定版 v6 を採用)
+  - [x] `npx prisma init`
+- [x] **スキーマ定義 (`prisma/schema.prisma`)**
+  - [x] `User`, `Account`, `Session`, `Settings` モデルの作成
+  - [x] **アーリーアダプター対応**: `Plan` enum と `isEarlyAdopter` フラグの追加
+- [x] **マイグレーション実行**
+  - [x] `npx prisma migrate dev --name init` による Supabase へのテーブル作成
+
+### 2.2 NextAuth 実装
+- [x] **ライブラリ導入**
+  - [x] `npm install next-auth @next-auth/prisma-adapter`
+- [x] **環境変数設定**
+  - [x] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (GCPから取得)
+  - [x] `NEXTAUTH_SECRET` (32桁のランダム文字列)
+- [x] **API ルート作成 (`src/app/api/auth/[...nextauth]/route.ts`)**
+  - [x] `GoogleProvider` の設定
+  - [x] `PrismaAdapter` の適用
+  - [x] **アーリーアダプター特典ロジック**: 新規登録時に先着15名までを自動判定して `EARLY_ACCESS` プランを付与
+- [x] **ログインボタンの実装**
+  - [x] `src/app/early-access/page.tsx` に `signIn('google')` を接続
+  - [x] ログイン済みの場合は自動的にタイマー画面へリダイレクトする処理
+
+### 2.3 設定の同期と永続化
+- [ ] **Settings API 作成**
+  - [ ] `src/app/api/settings/route.ts`
+  - [ ] `GET`: `prisma.settings.findUnique` (ログイン時のみ)
+  - [ ] `PUT`: `prisma.settings.upsert`
+- [ ] **設定同期フック (`useSettings`)**
+  - [ ] `SWR` (`npm install swr`) を導入
+  - [ ] ログイン時: APIから fetch / mutate
+  - [ ] 未ログイン時: LocalStorage と同期 (`useLocalStorage` フック作成)
+- [ ] **UI への結合**
+  - [ ] `SettingsModal` を `useSettings` を使うようにリファクタリング
+
+## Phase 3: Notion Integration - 外部連携
+
+### 3.1 Notion 認証
+- [ ] **Notion アプリ登録**
+  - [ ] Notion Developers で Integration 作成 (Public Integration)
+  - [ ] `NOTION_CLIENT_ID`, `NOTION_CLIENT_SECRET` を `.env` に追加
+- [ ] **OAuth フロー実装**
+  - [ ] `src/app/api/integrations/notion/auth/route.ts`: Notion の認可 URL へリダイレクト
+  - [ ] `src/app/api/integrations/notion/callback/route.ts`:
+    - [ ] `code` を受け取り `POST https://api.notion.com/v1/oauth/token`
+    - [ ] 取得した `access_token` を `Account` テーブル (または `Integration` テーブル新規作成) に保存
+- [ ] **暗号化処理 (`src/lib/crypto.ts`)**
+  - [ ] アクセストークンを DB 保存する前に AES 等で暗号化する関数実装
+
+### 3.2 タスク取得と選択
+- [ ] **タスク取得 API (`src/app/api/notion/tasks/route.ts`)**
+  - [ ] 保存されたトークンを復号
+  - [ ] Notion Search API を叩いて Database を検索、または指定 Database のページを取得
+- [ ] **タスクセレクター (`src/components/features/tasks/TaskSelector.tsx`)**
+  - [ ] `Combobox` (または Select) UI 実装
+  - [ ] 選択されたタスクを `currentTask` State に保存
+
+### 3.3 実績記録
+- [ ] **セッション記録 API (`src/app/api/sessions/route.ts`)**
+  - [ ] POST: `prisma.pomodoroSession.create`
+  - [ ] 関連づけられた `notionTaskId` があれば保存
+- [ ] **Notion への書き込み**
+  - [ ] セッション記録時、Notion API (Pages Update) を叩いて、該当タスクのプロパティ (例: "Actual Time") を更新する処理を追加
+
+## Phase 4: Monetization & Statistics - 収益化と統計
+
+### 4.1 統計ページ
+- [ ] **ライブラリ導入**
+  - [ ] `npm install recharts`
+- [ ] **統計 API (`src/app/api/stats/route.ts`)**
+  - [ ] 指定期間の `PomodoroSession` を集計して返す
+- [ ] **グラフ実装 (`src/components/features/stats/DailyChart.tsx`)**
+  - [ ] BarChart で日ごとの完了数を表示
+
+### 4.2 Stripe 統合
+- [ ] **Stripe セットアップ**
+  - [ ] `npm install stripe`
+  - [ ] `.env` に `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
+- [ ] **チェックアウト API (`src/app/api/stripe/checkout/route.ts`)**
+  - [ ] `stripe.checkout.sessions.create`
+- [ ] **Webhook API (`src/app/api/webhooks/stripe/route.ts`)**
+  - [ ] `checkout.session.completed` イベントをハンドリング
+  - [ ] `prisma.user.update` で `isPremium: true` にする
+- [ ] **プレミアムガード**
+  - [ ] `src/components/common/PremiumLock.tsx` 作成 (非プレミアムユーザーにオーバーレイを表示)
+
+## Phase 5: Polish & Deployment - 仕上げ
+
+### 5.1 ダークモード対応
+- [ ] **Next Themes 導入**
+  - [ ] `npm install next-themes`
+  - [ ] `src/app/providers.tsx` を作成し `ThemeProvider` でラップ
+  - [ ] `src/components/ui/ThemeToggle.tsx` 作成
+- [ ] **色調整**
+  - [ ] 全コンポーネントで `dark:` クラスが適切か再確認
+
+### 5.2 PWA 対応
+- [ ] **PWA パッケージ**
+  - [ ] `npm install @ducanh2912/next-pwa` (App Router 対応版)
+- [ ] **Manifest 作成**
+  - [ ] `public/manifest.json`
+  - [ ] アイコン画像 (192x192, 512x512) を生成して配置
+
+### 5.3 最終デプロイ
+- [ ] `npm run build` 実行確認
+- [ ] Vercel へプッシュ
+- [ ] 本番環境変数の設定確認
