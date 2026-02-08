@@ -12,8 +12,10 @@ import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
+  const { data: session } = useSession();
   const [settings, setSettings] = useState<TimerSettings>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('pomoru-settings');
@@ -40,13 +42,13 @@ export default function Home() {
     pause,
     reset,
     switchMode,
+    extendTime,
   } = useTimer(settings);
 
   // タイマー終了（0到達）の監視
   const hasTriggeredComplete = useRef(false);
 
   useEffect(() => {
-    // 0になった瞬間を1回だけ検知
     if (timeLeft <= 0 && !hasTriggeredComplete.current && isActive) {
       hasTriggeredComplete.current = true;
       playAlarm();
@@ -54,10 +56,8 @@ export default function Home() {
       if (mode === 'work') {
         if (settings.autoStartBreaks) {
           switchMode('shortBreak');
-          // 自動開始の場合は hasTriggeredComplete をリセット
           hasTriggeredComplete.current = false;
         } else {
-          // 自動開始OFFならダイアログを表示（タイマーは裏で進み続ける）
           setIsFlowModeOpen(true);
         }
       } else {
@@ -66,13 +66,12 @@ export default function Home() {
           hasTriggeredComplete.current = false;
         } else {
           switchMode('work');
-          pause(); // 休憩終了時は止める
+          pause();
           hasTriggeredComplete.current = false;
         }
       }
     }
 
-    // タイマーがリセットされたり、正の値に戻ったらフラグをリセット
     if (timeLeft > 0) {
       hasTriggeredComplete.current = false;
     }
@@ -103,6 +102,8 @@ export default function Home() {
     const timeString = `${isOvertime ? '+' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     document.title = `${timeString} - Pomoru`;
   }, [timeLeft]);
+
+  const isEarlyAdopter = (session?.user as any)?.plan === 'EARLY_ACCESS';
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 relative">
@@ -145,15 +146,22 @@ export default function Home() {
         onFinish={handleFinish}
       />
 
-      {/* Early Access Link */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <Link 
-          href="/early-access" 
-          className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
-        >
-          <Star className="w-3 h-3 fill-current" />
-          Early Adopter Program
-        </Link>
+      {/* Bottom Area: Link or Emoji Badge */}
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+        {isEarlyAdopter ? (
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary animate-fade-in cursor-default">
+            <span className="text-sm leading-none">👑</span>
+            <span>EARLY ADOPTER</span>
+          </div>
+        ) : (
+          <Link 
+            href="/early-access" 
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+          >
+            <span className="text-sm leading-none">🌟</span>
+            <span>Early Adopter Program</span>
+          </Link>
+        )}
       </div>
     </main>
   );

@@ -137,37 +137,43 @@
 - [x] **メイン画面からの導線設置**
   - [x] タイマー画面最下部に特別プログラムへのリンクを配置
 
+### 1.12 設定画面の UI/UX 改善
+- [x] **余計な説明文の削除**: 設定モーダルから Description を削除し、ミニマルな構成へ。
+- [x] **入力要素の最適化**: 数値入力フィールドのフォントを Mono 体にし、サイズと余白を拡大してタップ・クリックしやすく調整。
+- [x] **インタラクションの洗練**: トグルスイッチの背景アニメーションや、ホバーエフェクトの追加。
+
+### 1.13 アーリーアダプター限定バッジの実装
+- [ ] **バッジ表示ロジックの追加**: ログインユーザーのプランが `EARLY_ACCESS` の場合、王冠（👑）アイコンを表示。
+- [ ] **UI への統合**: タイマー画面の上部または下部に、誇りを感じられる洗練されたスタイルでバッジを配置。
+
 ## Phase 2: Authentication & Database - ユーザー基盤
 
 ### 2.1 データベース準備
-- [ ] **Vercel Postgres (または Supabase) 作成**
-  - [ ] Vercel ダッシュボードで Storage を作成
-  - [ ] `.env` に `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NON_POOLING` を設定
-- [ ] **Prisma 初期化**
-  - [ ] `npm install prisma --save-dev`
-  - [ ] `npm install @prisma/client`
-  - [ ] `npx prisma init`
-- [ ] **スキーマ定義 (`prisma/schema.prisma`)**
-  - [ ] `User` モデル作成 (id, name, email, emailVerified, image)
-  - [ ] `Account` モデル作成 (userId, type, provider, providerAccountId...)
-  - [ ] `Session` モデル作成
-  - [ ] `Settings` モデル作成 (userId, workDuration, shortBreakDuration, longBreakDuration, autoStartWork, autoStartBreaks)
-- [ ] **マイグレーション実行**
-  - [ ] `npx prisma migrate dev --name init_schema`
+- [x] **Supabase プロジェクト作成**
+  - [x] データベース接続文字列（DATABASE_URL / DIRECT_URL）の取得
+  - [x] `.env` への設定完了
+- [x] **Prisma 初期化と設定**
+  - [x] `npm install prisma @prisma/client` (安定版 v6 を採用)
+  - [x] `npx prisma init`
+- [x] **スキーマ定義 (`prisma/schema.prisma`)**
+  - [x] `User`, `Account`, `Session`, `Settings` モデルの作成
+  - [x] **アーリーアダプター対応**: `Plan` enum と `isEarlyAdopter` フラグの追加
+- [x] **マイグレーション実行**
+  - [x] `npx prisma migrate dev --name init` による Supabase へのテーブル作成
 
 ### 2.2 NextAuth 実装
-- [ ] **ライブラリ導入**
-  - [ ] `npm install next-auth @next-auth/prisma-adapter`
-- [ ] **環境変数設定**
-  - [ ] `NEXTAUTH_SECRET` (openssl rand -base64 32 で生成)
-  - [ ] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (GCPで取得)
-- [ ] **API ルート作成 (`src/app/api/auth/[...nextauth]/route.ts`)**
-  - [ ] `GoogleProvider` の設定
-  - [ ] `PrismaAdapter` の適用
-  - [ ] `callbacks` でセッションに `userId` を含めるように拡張
-- [ ] **ログインボタン実装 (`src/components/auth/LoginButton.tsx`)**
-  - [ ] `signIn('google')` を呼ぶボタン
-  - [ ] `useSession` でログイン状態ならアバターとログアウトボタンを表示
+- [x] **ライブラリ導入**
+  - [x] `npm install next-auth @next-auth/prisma-adapter`
+- [x] **環境変数設定**
+  - [x] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (GCPから取得)
+  - [x] `NEXTAUTH_SECRET` (32桁のランダム文字列)
+- [x] **API ルート作成 (`src/app/api/auth/[...nextauth]/route.ts`)**
+  - [x] `GoogleProvider` の設定
+  - [x] `PrismaAdapter` の適用
+  - [x] **アーリーアダプター特典ロジック**: 新規登録時に先着15名までを自動判定して `EARLY_ACCESS` プランを付与
+- [x] **ログインボタンの実装**
+  - [x] `src/app/early-access/page.tsx` に `signIn('google')` を接続
+  - [x] ログイン済みの場合は自動的にタイマー画面へリダイレクトする処理
 
 ### 2.3 設定の同期と永続化
 - [ ] **Settings API 作成**
