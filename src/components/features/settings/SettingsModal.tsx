@@ -3,6 +3,9 @@
 import { Modal } from "@/components/ui/Modal";
 import { TimerSettings } from "@/hooks/useTimer";
 import { Button } from "@/components/ui/Button";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { Crown, LogOut, LogIn } from "lucide-react";
+import Image from "next/image";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -11,7 +14,17 @@ interface SettingsModalProps {
   onSave: (settings: TimerSettings) => void;
 }
 
+type ExtendedUser = {
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  plan?: string;
+};
+
 export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsModalProps) {
+  const { data: session, status } = useSession();
+
   const handleTimeChange = (key: keyof TimerSettings, value: string) => {
     const numValue = parseInt(value, 10);
     if (!isNaN(numValue)) {
@@ -29,6 +42,9 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
     });
   };
 
+  const user = session?.user as ExtendedUser | undefined;
+  const isEarlyAdopter = user?.plan === 'EARLY_ACCESS';
+
   return (
     <Modal
       isOpen={isOpen}
@@ -36,6 +52,65 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
       title="Settings ⚙️"
     >
       <div className="space-y-8 py-6">
+        {/* Account Section */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-center">Account</h3>
+          <div className="bg-muted/30 rounded-2xl p-4 border border-border/50">
+            {status === "authenticated" ? (
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-4">
+                  {session.user?.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt={session.user.name || "User"}
+                      width={48}
+                      height={48}
+                      className="rounded-full border-2 border-primary/20"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-xl">
+                      👤
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate">{session.user?.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{session.user?.email}</p>
+                  </div>
+                  {isEarlyAdopter && (
+                    <div className="px-2 py-1 rounded-md bg-primary/10 text-primary border border-primary/20">
+                      <Crown className="w-3.5 h-3.5 fill-current" />
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => signOut()}
+                  className="w-full justify-center gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-10 rounded-xl transition-all"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Logout</span>
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4 py-2">
+                <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                  Sign in to sync your settings and <br />unlock premium features.
+                </p>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => signIn("google")}
+                  className="w-full justify-center gap-2 h-11 rounded-xl shadow-lg shadow-primary/10"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span className="text-xs font-bold uppercase tracking-wider">Sign in with Google</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Time Settings */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-center">Time (minutes)</h3>
