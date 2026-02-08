@@ -57,7 +57,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
         {/* Account Section */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-center">Account</h3>
-          <div className="bg-muted/30 rounded-2xl p-4 border border-border/50">
+          <div className="bg-muted/30 rounded-[1.5rem] p-4 border border-border/50">
             {status === "authenticated" ? (
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-4">
@@ -103,7 +103,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                   variant="primary"
                   size="sm"
                   asChild
-                  className="w-full justify-center gap-3 h-12 rounded-xl shadow-lg shadow-primary/10"
+                  className="w-full justify-center gap-3 h-12 rounded-[1rem] shadow-lg shadow-primary/10"
                 >
                   <Link href="/auth/signin" onClick={onClose}>
                     <LogIn className="w-4 h-4" />
@@ -127,7 +127,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 max="60"
                 value={settings.work / 60}
                 onChange={(e) => handleTimeChange('work', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-all shadow-sm"
+                className="w-full rounded-[1rem] border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-all shadow-sm"
               />
             </div>
             <div className="space-y-3">
@@ -138,7 +138,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 max="60"
                 value={settings.shortBreak / 60}
                 onChange={(e) => handleTimeChange('shortBreak', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
+                className="w-full rounded-[1rem] border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
               />
             </div>
             <div className="space-y-3">
@@ -149,7 +149,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 max="60"
                 value={settings.longBreak / 60}
                 onChange={(e) => handleTimeChange('longBreak', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
+                className="w-full rounded-[1rem] border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
         <div className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-center">Automation</h3>
           <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 transition-colors">
+            <div className="flex items-center justify-between p-3 rounded-[1.25rem] hover:bg-muted/50 transition-colors">
               <span className="text-sm font-medium">Auto Start Breaks</span>
               <button
                 onClick={() => handleToggle('autoStartBreaks')}
@@ -174,7 +174,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 />
               </button>
             </div>
-            <div className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 transition-colors">
+            <div className="flex items-center justify-between p-3 rounded-[1.25rem] hover:bg-muted/50 transition-colors">
               <span className="text-sm font-medium">Auto Start Work</span>
               <button
                 onClick={() => handleToggle('autoStartWork')}
@@ -193,7 +193,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
         </div>
 
         <div className="flex justify-center pt-2">
-          <Button onClick={onClose} variant="primary" className="w-full sm:w-40 h-12 text-base rounded-xl shadow-lg shadow-primary/20">
+          <Button onClick={onClose} variant="primary" className="w-full sm:w-40 h-12 text-base rounded-[1.25rem] shadow-lg shadow-primary/20">
             Done
           </Button>
         </div>
