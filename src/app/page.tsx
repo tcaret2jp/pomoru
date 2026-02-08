@@ -157,7 +157,7 @@ export default function Home() {
           <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
           
           {/* Task & Stats Quick Access */}
-          <div className="flex items-center gap-2 w-full max-w-[280px]">
+          <div className="flex items-center gap-2 w-full max-w-[280px] mx-auto">
             <button className="flex-1 flex items-center justify-between gap-3 px-4 h-10 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted/50 transition-all text-left group">
               <div className="flex items-center gap-2 overflow-hidden">
                 <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
@@ -259,20 +259,6 @@ export default function Home() {
           />
           
           <div className="grid grid-cols-1 gap-3">
-            <Link 
-              href="/stats" 
-              onClick={() => setIsNavOpen(false)}
-              className="flex items-center gap-4 p-5 rounded-3xl bg-muted/30 hover:bg-muted transition-colors group text-left"
-            >
-              <div className="p-3 rounded-2xl bg-background shadow-sm group-hover:scale-110 transition-transform">
-                <LayoutDashboard className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-black uppercase tracking-widest leading-none mb-1">Stats</p>
-                <p className="text-[10px] text-muted-foreground truncate">集中実績と詳細な分析</p>
-              </div>
-            </Link>
-
             <Link 
               href="/pricing" 
               onClick={() => setIsNavOpen(false)}
