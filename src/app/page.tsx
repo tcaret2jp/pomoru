@@ -24,7 +24,28 @@ export default function Home() {
   const [isFlowModeOpen, setIsFlowModeOpen] = useState(false);
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
   const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStart === null) return;
+    const touchEnd = e.touches[0].clientY;
+    const distance = touchEnd - touchStart;
+
+    // 50px以上下にスワイプしたら閉じる
+    if (distance > 50) {
+      setIsNavOpen(false);
+      setTouchStart(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setTouchStart(null);
+  };
 
   useEffect(() => {
     // 1. Settings load
@@ -209,7 +230,13 @@ export default function Home() {
       >
         <div className="max-w-md mx-auto text-center">
           {/* Handle */}
-          <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-8" />
+          <div 
+            className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-8 cursor-grab active:cursor-grabbing touch-none" 
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onClick={() => setIsNavOpen(false)}
+          />
           
           <div className="grid grid-cols-1 gap-3">
             <Link 
@@ -270,13 +297,6 @@ export default function Home() {
               </Link>
             )}
           </div>
-
-          <button 
-            onClick={() => setIsNavOpen(false)}
-            className="w-full mt-8 p-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors mx-auto"
-          >
-            Close Menu
-          </button>
         </div>
       </div>
     </main>
