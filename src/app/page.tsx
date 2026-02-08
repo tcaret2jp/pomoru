@@ -12,7 +12,7 @@ import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 import { WelcomeModal } from '@/components/features/auth/WelcomeModal';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
-import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles } from 'lucide-react';
+import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 
@@ -153,7 +153,27 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center gap-8 w-full max-w-md mx-auto">
-        <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
+        <div className="flex flex-col items-center gap-4 w-full">
+          <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
+          
+          {/* Task & Stats Quick Access */}
+          <div className="flex items-center gap-2 w-full max-w-[280px]">
+            <button className="flex-1 flex items-center justify-between gap-3 px-4 h-10 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted/50 transition-all text-left group">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground truncate group-hover:text-foreground">Select Task</span>
+              </div>
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            </button>
+            
+            <Link 
+              href="/stats"
+              className="flex items-center justify-center w-10 h-10 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted/50 transition-all text-lg hover:bg-primary/5 active:scale-95"
+            >
+              📊
+            </Link>
+          </div>
+        </div>
         
         <TimerProgress 
           timeLeft={timeLeft} 
