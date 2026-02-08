@@ -12,8 +12,9 @@ import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 import { WelcomeModal } from '@/components/features/auth/WelcomeModal';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
-import { Star } from 'lucide-react';
+import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { cn } from '@/lib/utils';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -22,6 +23,7 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFlowModeOpen, setIsFlowModeOpen] = useState(false);
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
 
   useEffect(() => {
@@ -58,7 +60,6 @@ export default function Home() {
     pause,
     reset,
     switchMode,
-    extendTime,
   } = useTimer(settings);
 
   const hasTriggeredComplete = useRef(false);
@@ -125,12 +126,12 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 relative">
-      <div className="absolute top-4 right-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 relative overflow-hidden text-center">
+      <div className="absolute top-4 right-4 text-right">
         <ThemeToggle />
       </div>
 
-      <div className="flex flex-col items-center gap-8 w-full max-w-md">
+      <div className="flex flex-col items-center gap-8 w-full max-w-md mx-auto">
         <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
         
         <TimerProgress 
@@ -138,6 +139,7 @@ export default function Home() {
           totalTime={settings[mode]} 
           mode={mode} 
           size={320}
+          className="mx-auto"
         >
           <TimerDisplay timeLeft={timeLeft} />
         </TimerProgress>
@@ -170,22 +172,112 @@ export default function Home() {
         onClose={closeWelcome}
       />
 
-      {/* Bottom Area: Link or Emoji Badge */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-        {isEarlyAdopter ? (
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary animate-fade-in cursor-default">
-            <span className="text-sm leading-none">👑</span>
+      {/* Bottom Area: Trigger and Badge */}
+      <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-4 text-center">
+        {/* Pull-up Trigger */}
+        <button
+          onClick={() => setIsNavOpen(true)}
+          className="group flex flex-col items-center gap-1.5 px-6 py-2 rounded-full hover:bg-muted/50 transition-all active:scale-95 mx-auto"
+        >
+          <ChevronUp className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:-translate-y-0.5 transition-all" />
+          <span className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground group-hover:text-foreground">Menu</span>
+        </button>
+
+        {/* Status Badge */}
+        {isEarlyAdopter && (
+          <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary animate-fade-in cursor-default select-none mx-auto">
+            <span className="text-xs leading-none">👑</span>
             <span>EARLY ADOPTER</span>
           </div>
-        ) : (
-          <Link 
-            href="/early-access" 
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
-          >
-            <span className="text-sm leading-none">🌟</span>
-            <span>Early Adopter Program</span>
-          </Link>
         )}
+      </div>
+
+      {/* Pull-up Navigation Menu (Drawer) */}
+      <div 
+        className={cn(
+          "fixed inset-0 bg-background/40 backdrop-blur-md z-40 transition-all duration-500",
+          isNavOpen ? "opacity-100 visible" : "opacity-0 pointer-events-none invisible"
+        )}
+        onClick={() => setIsNavOpen(false)}
+      />
+      
+      <div 
+        className={cn(
+          "fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 transition-transform duration-500 ease-out rounded-t-[2.5rem] shadow-2xl pb-12 pt-4 px-6",
+          isNavOpen ? "translate-y-0" : "translate-y-full"
+        )}
+      >
+        <div className="max-w-md mx-auto text-center">
+          {/* Handle */}
+          <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-8" />
+          
+          <div className="grid grid-cols-1 gap-3">
+            <Link 
+              href="/stats" 
+              onClick={() => setIsNavOpen(false)}
+              className="flex items-center gap-4 p-5 rounded-3xl bg-muted/30 hover:bg-muted transition-colors group text-left"
+            >
+              <div className="p-3 rounded-2xl bg-background shadow-sm group-hover:scale-110 transition-transform">
+                <LayoutDashboard className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-black uppercase tracking-widest leading-none mb-1">Stats</p>
+                <p className="text-[10px] text-muted-foreground truncate">集中実績と詳細な分析</p>
+              </div>
+            </Link>
+
+            <Link 
+              href="/pricing" 
+              onClick={() => setIsNavOpen(false)}
+              className="flex items-center gap-4 p-5 rounded-3xl bg-muted/30 hover:bg-muted transition-colors group text-left"
+            >
+              <div className="p-3 rounded-2xl bg-background shadow-sm group-hover:scale-110 transition-transform">
+                <CreditCard className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-black uppercase tracking-widest leading-none mb-1">Pricing</p>
+                <p className="text-[10px] text-muted-foreground truncate">プラン詳細とプレミアム特典</p>
+              </div>
+            </Link>
+
+            <Link 
+              href="/about" 
+              onClick={() => setIsNavOpen(false)}
+              className="flex items-center gap-4 p-5 rounded-3xl bg-muted/30 hover:bg-muted transition-colors group text-left"
+            >
+              <div className="p-3 rounded-2xl bg-background shadow-sm group-hover:scale-110 transition-transform">
+                <Info className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-black uppercase tracking-widest leading-none mb-1">About</p>
+                <p className="text-[10px] text-muted-foreground truncate">Pomoruのコンセプトと機能</p>
+              </div>
+            </Link>
+
+            {!isEarlyAdopter && (
+              <Link 
+                href="/early-access" 
+                onClick={() => setIsNavOpen(false)}
+                className="flex items-center gap-4 p-5 rounded-3xl bg-primary/5 border border-primary/10 hover:bg-primary/10 transition-colors group text-left"
+              >
+                <div className="p-3 rounded-2xl bg-primary/10 shadow-sm group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-black uppercase tracking-widest leading-none mb-1 text-primary">Early Access</p>
+                  <p className="text-[10px] text-primary/60 italic font-medium truncate">先着特典を確保する</p>
+                </div>
+              </Link>
+            )}
+          </div>
+
+          <button 
+            onClick={() => setIsNavOpen(false)}
+            className="w-full mt-8 p-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors mx-auto"
+          >
+            Close Menu
+          </button>
+        </div>
       </div>
     </main>
   );
