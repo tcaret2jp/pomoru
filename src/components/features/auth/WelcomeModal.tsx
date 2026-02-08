@@ -2,7 +2,6 @@
 
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { LogIn, Info } from "lucide-react";
 
@@ -37,11 +36,13 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
           <Button 
             variant="primary" 
             size="lg" 
-            onClick={() => signIn("google")}
+            asChild
             className="w-full h-14 text-lg rounded-2xl gap-3 shadow-xl shadow-primary/10 transition-transform hover:scale-[1.01]"
           >
-            <LogIn className="w-5 h-5" />
-            Google でログイン
+            <Link href="/auth/signin" onClick={onClose}>
+              <LogIn className="w-5 h-5" />
+              特典を受け取って始める
+            </Link>
           </Button>
           
           <Button 

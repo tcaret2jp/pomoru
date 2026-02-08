@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/early-access", // ログインが必要な時はLPへ飛ばす
+    signIn: "/auth/signin", // ログイン専用ページへ飛ばす
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
