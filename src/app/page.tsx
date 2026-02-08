@@ -2,38 +2,53 @@
 
 import { useState, useEffect, useRef } from 'react';
 import useSound from 'use-sound';
-import { useTimer, DEFAULT_SETTINGS, TimerSettings, TimerMode } from '@/hooks/useTimer';
+import { useTimer, DEFAULT_SETTINGS, TimerSettings } from '@/hooks/useTimer';
 import { TimerDisplay } from '@/components/features/timer/TimerDisplay';
 import { TimerProgress } from '@/components/features/timer/TimerProgress';
 import { TimerControls } from '@/components/features/timer/TimerControls';
 import { ModeSwitcher } from '@/components/features/timer/ModeSwitcher';
 import { SettingsModal } from '@/components/features/settings/SettingsModal';
 import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
+import { WelcomeModal } from '@/components/features/auth/WelcomeModal';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 export default function Home() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFlowModeOpen, setIsFlowModeOpen] = useState(false);
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
   const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
 
-  // ハイドレーションエラー防止：マウント後に localStorage を読み込む
   useEffect(() => {
-    const saved = localStorage.getItem('pomoru-settings');
-    if (saved) {
+    // 1. Settings load
+    const savedSettings = localStorage.getItem('pomoru-settings');
+    if (savedSettings) {
       try {
-        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(saved) });
+        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) });
       } catch (e) {
         console.error('Failed to load settings', e);
       }
     }
+
+    // 2. Welcome Modal check
+    // 未ログインかつ、過去にこのポップアップを見ていない場合に表示
+    const hasSeenWelcome = localStorage.getItem('pomoru-welcome-seen');
+    if (status === "unauthenticated" && !hasSeenWelcome) {
+      setIsWelcomeOpen(true);
+    }
+
     setMounted(true);
-  }, []);
+  }, [status]);
+
+  const closeWelcome = () => {
+    setIsWelcomeOpen(false);
+    localStorage.setItem('pomoru-welcome-seen', 'true');
+  };
 
   const {
     timeLeft,
@@ -105,7 +120,6 @@ export default function Home() {
 
   const isEarlyAdopter = (session?.user as any)?.plan === 'EARLY_ACCESS';
 
-  // マウントされるまで何も表示しない、またはデフォルト状態でレンダリング
   if (!mounted) {
     return <main className="min-h-screen bg-background" />;
   }
@@ -151,6 +165,12 @@ export default function Home() {
         onFinish={handleFinish}
       />
 
+      <WelcomeModal
+        isOpen={isWelcomeOpen}
+        onClose={closeWelcome}
+      />
+
+      {/* Bottom Area: Link or Emoji Badge */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center">
         {isEarlyAdopter ? (
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary animate-fade-in cursor-default">

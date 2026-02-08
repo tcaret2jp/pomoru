@@ -147,8 +147,16 @@
 - [x] **UI への統合**: タイマー画面の最下部に、誇りを感じられる洗練されたスタイルでバッジを配置。
 
 ### 1.14 設定画面のアカウント情報セクション実装
-- [ ] **ログイン状態の表示**: ユーザー名、メール、アバター、現在のプランを表示。
-- [ ] **認証操作**: ログアウトボタン、または未ログイン時のログイン誘導ボタンの配置。
+- [x] **ログイン状態の表示**: ユーザー名、メール、アバター、現在のプランを表示。
+- [x] **認証操作**: ログアウトボタン、または未ログイン時のログイン誘導ボタンの配置。
+
+### 1.15 オンボーディング（Welcome ポップアップ & About ページ）
+- [x] **About ページの実装 (`src/app/about/page.tsx`)**
+  - [x] コンセプト、機能紹介、アーリーアダプター特典の説明。
+- [x] **Welcome ポップアップの作成 (`src/components/features/auth/WelcomeModal.tsx`)**
+  - [x] 初回訪問者向けの案内とログイン/詳細への誘導。
+- [x] **表示制御ロジックの統合**
+  - [x] `localStorage` を使用した「既読」管理の実装。
 
 ## Phase 2: Authentication & Database - ユーザー基盤
 
@@ -180,16 +188,14 @@
   - [x] ログイン済みの場合は自動的にタイマー画面へリダイレクトする処理
 
 ### 2.3 設定の同期と永続化
-- [ ] **Settings API 作成**
-  - [ ] `src/app/api/settings/route.ts`
-  - [ ] `GET`: `prisma.settings.findUnique` (ログイン時のみ)
-  - [ ] `PUT`: `prisma.settings.upsert`
-- [ ] **設定同期フック (`useSettings`)**
-  - [ ] `SWR` (`npm install swr`) を導入
-  - [ ] ログイン時: APIから fetch / mutate
-  - [ ] 未ログイン時: LocalStorage と同期 (`useLocalStorage` フック作成)
-- [ ] **UI への結合**
-  - [ ] `SettingsModal` を `useSettings` を使うようにリファクタリング
+- [ ] **Settings API の作成 (`src/app/api/settings/route.ts`)**
+  - [ ] `GET`: ログインユーザーの設定を取得
+  - [ ] `PUT`: 設定（時間、自動開始など）をデータベースに保存
+- [ ] **同期ロジックの実装**
+  - [ ] ログイン時：DBから設定を読み込み、`localStorage` と同期
+  - [ ] 設定変更時：ログイン中なら DB と `localStorage` の両方を更新
+- [ ] **UI への反映**
+  - [ ] アプリ起動時にシームレスにユーザー設定が適用されるように調整
 
 ## Phase 3: Notion Integration - 外部連携
 
