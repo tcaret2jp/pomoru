@@ -51,6 +51,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
       isOpen={isOpen}
       onClose={onClose}
       title="Settings ⚙️"
+      className="max-w-[400px] w-[95vw]"
     >
       <div className="space-y-8 py-6">
         {/* Account Section */}
