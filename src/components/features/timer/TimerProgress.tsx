@@ -26,12 +26,10 @@ export function TimerProgress({
   const dashOffset = circumference - progress * circumference;
 
   return (
-    <div className={cn("relative flex items-center justify-center", className)}>
+    <div className={cn("relative flex items-center justify-center w-full max-w-[var(--timer-size)] aspect-square", className)} style={{ "--timer-size": `${size}px` } as React.CSSProperties}>
       <svg
-        width={size}
-        height={size}
         viewBox={`0 0 ${size} ${size}`}
-        className="transform -rotate-90"
+        className="transform -rotate-90 w-full h-full"
       >
         {/* Background Circle */}
         <circle

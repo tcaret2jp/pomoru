@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,6 +17,20 @@ import { ThemeProvider } from "@/components/providers";
 export const metadata: Metadata = {
   title: "Pomoru",
   description: "Simple Pomodoro Timer",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Pomoru",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#dc2626",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
