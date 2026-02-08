@@ -4,9 +4,22 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
-import { ArrowLeft, Star, Zap, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Star } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function EarlyAccessPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // 既にログイン済みの場合はタイマーへ戻す
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
+
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden">
       {/* Background decoration */}
@@ -47,9 +60,10 @@ export default function EarlyAccessPage() {
           <Button 
             size="lg" 
             className="text-lg px-12 h-16 rounded-full shadow-2xl shadow-primary/20 bg-primary hover:scale-[1.02] transition-transform"
-            onClick={() => alert('Phase 2 implementation coming soon! 🚀')}
+            disabled={status === "loading"}
+            onClick={() => signIn("google")}
           >
-            ベータ版に登録して特典を受け取る
+            {status === "loading" ? "Loading..." : "Google でログインして特典を受け取る"}
           </Button>
         </div>
       </section>
