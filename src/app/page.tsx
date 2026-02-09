@@ -12,7 +12,7 @@ import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 import { WelcomeModal } from '@/components/features/auth/WelcomeModal';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
-import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles, ChevronDown, CheckCircle2, ArrowLeft, ChevronRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 
@@ -20,10 +20,29 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS);
+  const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFlowModeOpen, setIsFlowModeOpen] = useState(false);
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const taskMenuRef = useRef<HTMLDivElement>(null);
+
+  // メニューの外側をクリックしたら閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (taskMenuRef.current && !taskMenuRef.current.contains(event.target as Node)) {
+        setIsTaskMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const todayTasks = [
+    "Pomoru UIのブラッシュアップ",
+    "Notion APIの調査"
+  ];
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
 
@@ -157,14 +176,70 @@ export default function Home() {
           <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
           
           {/* Task & Stats Quick Access */}
-          <div className="flex items-center gap-2 w-full max-w-[280px] mx-auto">
-            <button className="flex-1 flex items-center justify-between gap-3 px-4 h-10 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted/50 transition-all text-left group">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground truncate group-hover:text-foreground">Select Task</span>
+          <div className="flex items-center gap-2 w-full max-w-[280px] mx-auto relative" ref={taskMenuRef}>
+            <div className="flex-1 flex items-center bg-muted/30 border border-border/50 rounded-2xl overflow-hidden h-10 group/task">
+              {/* Left Side: Dropdown Trigger (Select Task) */}
+              <button 
+                onClick={() => setIsTaskMenuOpen(!isTaskMenuOpen)}
+                className="flex-1 flex items-center gap-3 px-4 h-full hover:bg-muted/50 transition-all min-w-0 text-left"
+              >
+                <CheckCircle2 className={cn("w-3.5 h-3.5 shrink-0", selectedTask ? "text-primary" : "text-muted-foreground")} />
+                <span className={cn(
+                  "text-[10px] font-bold uppercase tracking-wider truncate",
+                  selectedTask ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+                )}>
+                  {selectedTask || "Select Task"}
+                </span>
+              </button>
+
+              {/* Right Side: Direct Link to Tasks List */}
+              <Link 
+                href="/tasks"
+                className="px-3 h-full hover:bg-muted/50 transition-all border-l border-border/10 flex items-center justify-center group/arrow"
+              >
+                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground shrink-0 group-hover/arrow:text-foreground transition-colors" />
+              </Link>
+            </div>
+
+            {/* Dropdown Menu */}
+            {isTaskMenuOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="p-2">
+                  <p className="px-3 py-2 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Today's Focus</p>
+                  {todayTasks.map((task) => (
+                    <button
+                      key={task}
+                      onClick={() => {
+                        setSelectedTask(task);
+                        setIsTaskMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors text-left group"
+                    >
+                      <div className={cn(
+                        "w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                        selectedTask === task ? "bg-primary border-primary" : "border-muted-foreground/30 group-hover:border-primary/50"
+                      )}>
+                        {selectedTask === task && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                      </div>
+                      <span className={cn("text-xs font-medium truncate", selectedTask === task ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
+                        {task}
+                      </span>
+                    </button>
+                  ))}
+                  
+                  <div className="h-[1px] bg-border my-2" />
+                  
+                  <Link 
+                    href="/tasks"
+                    onClick={() => setIsTaskMenuOpen(false)}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-primary/5 transition-colors group"
+                  >
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">View All Tasks</span>
+                    <ArrowLeft className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors rotate-180" />
+                  </Link>
+                </div>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-            </button>
+            )}
             
             <Link 
               href="/stats"

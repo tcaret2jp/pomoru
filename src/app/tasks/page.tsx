@@ -1,0 +1,87 @@
+'use client';
+
+import { Card } from "@/components/ui/Card";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import Link from "next/link";
+import { ArrowLeft, CheckCircle2, Plus, Search, Tag } from "lucide-react";
+import { useState } from "react";
+
+export default function TasksPage() {
+  // 仮のタスクデータ（後にNotion/DBと連携）
+  const [tasks] = useState([
+    { id: 1, title: "Pomoru UIのブラッシュアップ", category: "Design", status: "todo" },
+    { id: 2, title: "Notion APIの調査", category: "Dev", status: "todo" },
+    { id: 3, title: "リサーチ: 競合アプリの分析", category: "Research", status: "done" },
+  ]);
+
+  return (
+    <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] dark:opacity-[0.05]">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary blur-[120px]" />
+      </div>
+
+      {/* Header */}
+      <header className="max-w-5xl mx-auto px-6 py-8 flex justify-between items-center relative z-10">
+        <Link 
+          href="/" 
+          className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Exit</span>
+        </Link>
+        <ThemeToggle />
+      </header>
+
+      {/* Content */}
+      <section className="max-w-2xl mx-auto px-6 py-12 relative z-10">
+        <div className="flex justify-between items-end mb-12">
+          <div>
+            <h1 className="text-4xl font-bold font-mono tracking-tighter mb-2">Tasks</h1>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Manage your focus list.</p>
+          </div>
+          <button className="w-10 h-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center hover:scale-105 transition-all shadow-lg shadow-primary/20">
+            <Plus className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Search Bar (Minimal) */}
+        <div className="relative mb-8 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+          <input 
+            type="text" 
+            placeholder="Search tasks..." 
+            className="w-full bg-muted/30 border border-border/50 rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-all"
+          />
+        </div>
+
+        {/* Task List */}
+        <div className="space-y-3">
+          {tasks.map((task) => (
+            <Card key={task.id} className="p-4 border-border/50 bg-muted/10 hover:bg-muted/20 transition-all cursor-pointer group rounded-2xl">
+              <div className="flex items-center gap-4">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${task.status === 'done' ? 'bg-primary border-primary' : 'border-muted-foreground/30 group-hover:border-primary/50'}`}>
+                  {task.status === 'done' && <CheckCircle2 className="w-3 h-3 text-white" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium truncate ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}>
+                    {task.title}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Tag className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">{task.category}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="max-w-5xl mx-auto px-6 py-12 text-center text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/30 font-mono">
+        Select a task to stay focused.
+      </footer>
+    </main>
+  );
+}
