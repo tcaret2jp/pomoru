@@ -20,7 +20,7 @@ export function ModeSwitcher({ currentMode, onSwitch }: ModeSwitcherProps) {
           key={mode.id}
           onClick={() => onSwitch(mode.id)}
           className={cn(
-            "flex-1 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+            "flex-1 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-200",
             currentMode === mode.id
               ? "bg-background text-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"

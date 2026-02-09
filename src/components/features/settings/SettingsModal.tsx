@@ -127,7 +127,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 max="60"
                 value={settings.work / 60}
                 onChange={(e) => handleTimeChange('work', e.target.value)}
-                className="w-full rounded-[1rem] border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-all shadow-sm"
+                className="w-full rounded-[1rem] border border-border bg-background px-2 py-2 md:px-3 md:py-3 text-sm md:text-base font-mono text-center focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-all shadow-sm"
               />
             </div>
             <div className="space-y-3">
@@ -138,7 +138,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 max="60"
                 value={settings.shortBreak / 60}
                 onChange={(e) => handleTimeChange('shortBreak', e.target.value)}
-                className="w-full rounded-[1rem] border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
+                className="w-full rounded-[1rem] border border-border bg-background px-2 py-2 md:px-3 md:py-3 text-sm md:text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
               />
             </div>
             <div className="space-y-3">
@@ -149,7 +149,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 max="60"
                 value={settings.longBreak / 60}
                 onChange={(e) => handleTimeChange('longBreak', e.target.value)}
-                className="w-full rounded-[1rem] border border-border bg-background px-3 py-3 text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
+                className="w-full rounded-[1rem] border border-border bg-background px-2 py-2 md:px-3 md:py-3 text-sm md:text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
               />
             </div>
           </div>

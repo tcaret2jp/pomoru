@@ -147,12 +147,12 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground transition-colors duration-300 px-4 relative overflow-hidden text-center">
-      <div className="absolute top-4 right-4 text-right">
+    <main className="flex min-h-[100dvh] flex-col items-center bg-background text-foreground transition-colors duration-300 px-4 relative overflow-hidden text-center">
+      <div className="absolute top-4 right-4 text-right z-20">
         <ThemeToggle />
       </div>
 
-      <div className="flex flex-col items-center gap-8 w-full max-w-md mx-auto">
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 md:gap-8 w-full max-w-md mx-auto py-12">
         <div className="flex flex-col items-center gap-4 w-full">
           <ModeSwitcher currentMode={mode} onSwitch={switchMode} />
           
@@ -180,7 +180,7 @@ export default function Home() {
           totalTime={settings[mode]} 
           mode={mode} 
           size={320}
-          className="mx-auto"
+          className="mx-auto w-[280px] h-[280px] md:w-[320px] md:h-[320px]"
         >
           <TimerDisplay timeLeft={timeLeft} />
         </TimerProgress>
@@ -279,6 +279,7 @@ export default function Home() {
               className="flex items-center gap-4 p-5 rounded-3xl bg-muted/30 hover:bg-muted transition-colors group text-left"
             >
               <div className="p-3 rounded-2xl bg-background shadow-sm group-hover:scale-110 transition-transform">
+                {/* 📊アイコンの代わりに Lucide アイコンを維持しつつ、一貫性を保つ */}
                 <Info className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
@@ -308,3 +309,4 @@ export default function Home() {
     </main>
   );
 }
+

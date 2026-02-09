@@ -13,11 +13,11 @@ export function TimerDisplay({ timeLeft, className }: TimerDisplayProps) {
 
   return (
     <div className={cn(
-      "text-8xl font-bold font-mono tracking-tighter tabular-nums transition-colors duration-500",
+      "text-7xl md:text-8xl font-bold font-mono tracking-tighter tabular-nums transition-colors duration-500",
       isOvertime ? "text-primary animate-pulse" : "text-foreground",
       className
     )}>
-      {isOvertime && <span className="text-6xl mr-2">+</span>}
+      {isOvertime && <span className="text-5xl md:text-6xl mr-1 md:mr-2">+</span>}
       {minutes.toString().padStart(2, "0")}:{seconds.toString().padStart(2, "0")}
     </div>
   );
