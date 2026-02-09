@@ -134,7 +134,11 @@ export default function PricingPage() {
               </li>
               <li className="flex items-center gap-3 text-sm font-bold">
                 <Check className="w-4 h-4 text-primary shrink-0" />
-                タスク連携 (Notion)
+                Notion連携 (基本)
+              </li>
+              <li className="flex items-center gap-3 text-sm font-bold">
+                <Check className="w-4 h-4 text-primary shrink-0" />
+                カスタムアラーム音
               </li>
             </ul>
             <Button asChild variant="ghost" className="w-full rounded-2xl border border-border h-12 text-xs font-black uppercase tracking-widest">
@@ -159,11 +163,11 @@ export default function PricingPage() {
               </li>
               <li className="flex items-center gap-3 text-sm font-bold">
                 <Check className="w-4 h-4 text-primary shrink-0" />
-                詳細統計・分析
+                詳細統計・分析機能
               </li>
-              <li className="flex items-center gap-3 text-sm font-medium">
+              <li className="flex items-center gap-3 text-sm font-bold">
                 <Check className="w-4 h-4 text-primary shrink-0" />
-                カスタムアラーム音
+                高度なタスク管理 (双方向)
               </li>
             </ul>
             <Button asChild className="w-full rounded-2xl h-12 text-xs font-black uppercase tracking-widest shadow-lg shadow-primary/20">

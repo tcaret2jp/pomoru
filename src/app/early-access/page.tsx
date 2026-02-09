@@ -23,13 +23,6 @@ export default function EarlyAccessPage() {
       .catch(() => setUserCount(0));
   }, []);
 
-  // 既にログイン済みの場合はタイマーへ戻す
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/");
-    }
-  }, [status, router]);
-
   const remaining = userCount !== null ? Math.max(0, LIMIT - userCount) : null;
   const progressPercent = userCount !== null ? (Math.min(userCount, LIMIT) / LIMIT) * 100 : 0;
 
