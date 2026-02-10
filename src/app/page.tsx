@@ -16,11 +16,12 @@ import Link from 'next/link';
 import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles, ChevronDown, CheckCircle2, ArrowLeft, ChevronRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
-import { hasAccess } from '@/lib/auth-helpers';
+import { hasAccess, getEffectiveStatus } from '@/lib/auth-helpers';
 import { Plan } from '@prisma/client';
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { data: session, status: actualStatus } = useSession();
+  const status = getEffectiveStatus(actualStatus);
   const [mounted, setMounted] = useState(false);
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
