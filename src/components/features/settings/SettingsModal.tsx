@@ -115,46 +115,6 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
           </div>
         </div>
 
-        {/* Time Settings */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-center">Time (minutes)</h3>
-          <div className="grid grid-cols-3 gap-6">
-            <div className="space-y-3">
-              <label className="text-xs font-medium block text-center">Work</label>
-              <input
-                type="number"
-                min="1"
-                max="60"
-                value={settings.work / 60}
-                onChange={(e) => handleTimeChange('work', e.target.value)}
-                className="w-full rounded-[1rem] border border-border bg-background px-2 py-2 md:px-3 md:py-3 text-sm md:text-base font-mono text-center focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none transition-all shadow-sm"
-              />
-            </div>
-            <div className="space-y-3">
-              <label className="text-xs font-medium block text-center">Short</label>
-              <input
-                type="number"
-                min="1"
-                max="60"
-                value={settings.shortBreak / 60}
-                onChange={(e) => handleTimeChange('shortBreak', e.target.value)}
-                className="w-full rounded-[1rem] border border-border bg-background px-2 py-2 md:px-3 md:py-3 text-sm md:text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
-              />
-            </div>
-            <div className="space-y-3">
-              <label className="text-xs font-medium block text-center">Long</label>
-              <input
-                type="number"
-                min="1"
-                max="60"
-                value={settings.longBreak / 60}
-                onChange={(e) => handleTimeChange('longBreak', e.target.value)}
-                className="w-full rounded-[1rem] border border-border bg-background px-2 py-2 md:px-3 md:py-3 text-sm md:text-base font-mono text-center focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:outline-none transition-all shadow-sm"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Auto Start Settings */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground text-center">Automation</h3>

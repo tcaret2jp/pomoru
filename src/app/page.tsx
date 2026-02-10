@@ -8,6 +8,7 @@ import { TimerProgress } from '@/components/features/timer/TimerProgress';
 import { TimerControls } from '@/components/features/timer/TimerControls';
 import { ModeSwitcher } from '@/components/features/timer/ModeSwitcher';
 import { SettingsModal } from '@/components/features/settings/SettingsModal';
+import { TimeEditModal } from '@/components/features/timer/TimeEditModal';
 import { FlowModeDialog } from '@/components/features/timer/FlowModeDialog';
 import { WelcomeModal } from '@/components/features/auth/WelcomeModal';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -23,6 +24,7 @@ export default function Home() {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isTimeEditOpen, setIsTimeEditOpen] = useState(false);
   const [isFlowModeOpen, setIsFlowModeOpen] = useState(false);
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -150,6 +152,11 @@ export default function Home() {
     reset();
   };
 
+  const handleTimerClick = () => {
+    if (isActive) return;
+    setIsTimeEditOpen(true);
+  };
+
   useEffect(() => {
     const isOvertime = timeLeft < 0;
     const absTime = Math.abs(timeLeft);
@@ -268,7 +275,11 @@ export default function Home() {
           size={320}
           className="mx-auto w-[280px] h-[280px] md:w-[320px] md:h-[320px]"
         >
-          <TimerDisplay timeLeft={timeLeft} />
+          <TimerDisplay 
+            timeLeft={timeLeft} 
+            isEditable={!isActive}
+            onEdit={handleTimerClick}
+          />
         </TimerProgress>
         
         <TimerControls 
@@ -297,6 +308,14 @@ export default function Home() {
       <WelcomeModal
         isOpen={isWelcomeOpen}
         onClose={closeWelcome}
+      />
+
+      <TimeEditModal
+        isOpen={isTimeEditOpen}
+        onClose={() => setIsTimeEditOpen(false)}
+        mode={mode}
+        initialSeconds={settings[mode]}
+        onSave={(newSeconds) => saveSettings({ ...settings, [mode]: newSeconds })}
       />
 
       {/* Bottom Area: Trigger and Badge */}
