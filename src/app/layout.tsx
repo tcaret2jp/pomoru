@@ -13,6 +13,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import { ThemeProvider } from "@/components/providers";
+import { AdminDebugPanel } from "@/components/features/admin/AdminDebugPanel";
 
 export const metadata: Metadata = {
   title: "Pomoru",
@@ -50,6 +51,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <AdminDebugPanel />
         </ThemeProvider>
       </body>
     </html>

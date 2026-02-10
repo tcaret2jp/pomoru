@@ -3,16 +3,56 @@
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Plus, Search, Tag } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Plus, Search, Tag, Lock } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { hasAccess } from "@/lib/auth-helpers";
+import { Plan } from "@prisma/client";
+import { Button } from "@/components/ui/Button";
 
 export default function TasksPage() {
+  const { data: session } = useSession();
+  const userPlan = (session?.user as any)?.plan;
+  const canAccess = hasAccess(userPlan, Plan.PLUS);
+
   // 仮のタスクデータ（後にNotion/DBと連携）
   const [tasks] = useState([
     { id: 1, title: "[Sample] Pomoru UIのブラッシュアップ", category: "Design", status: "todo" },
     { id: 2, title: "[Sample] Notion APIの調査", category: "Dev", status: "todo" },
     { id: 3, title: "[Sample] リサーチ: 競合アプリの分析", category: "Research", status: "done" },
   ]);
+
+  if (!canAccess) {
+    return (
+      <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden flex flex-col items-center justify-center p-6 text-center">
+        {/* Background decoration */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] dark:opacity-[0.05]">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary blur-[120px]" />
+        </div>
+
+        <div className="max-w-md w-full space-y-8 relative z-10">
+          <div className="w-20 h-20 rounded-[2rem] bg-primary/10 flex items-center justify-center mx-auto mb-8 shadow-inner">
+            <Lock className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold font-mono tracking-tighter">Task Management</h1>
+            <p className="text-muted-foreground leading-relaxed">
+              Notion連携を含むタスク管理機能を使用するには、<br />
+              <span className="text-primary font-bold">Plus Plan</span> へのアップグレードが必要です。
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 pt-4">
+            <Button asChild variant="primary" className="h-14 rounded-2xl text-sm font-black uppercase tracking-widest shadow-lg shadow-primary/20">
+              <Link href="/pricing">Upgrade Now</Link>
+            </Button>
+            <Button asChild variant="ghost" className="h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest">
+              <Link href="/">Back to Timer</Link>
+            </Button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden">

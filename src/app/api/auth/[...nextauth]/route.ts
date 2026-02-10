@@ -14,11 +14,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    // セッションにユーザーIDを含めるように拡張
+    // セッションにユーザー情報を追加
     async session({ session, user }) {
       if (session.user) {
         (session.user as any).id = user.id;
         (session.user as any).plan = (user as any).plan;
+        
+        // サーバーサイドでの管理者判定
+        const adminEmail = process.env.ADMIN_EMAIL;
+        (session.user as any).isAdmin = adminEmail && session.user.email === adminEmail;
       }
       return session;
     },

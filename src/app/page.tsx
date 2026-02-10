@@ -16,6 +16,8 @@ import Link from 'next/link';
 import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles, ChevronDown, CheckCircle2, ArrowLeft, ChevronRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
+import { hasAccess } from '@/lib/auth-helpers';
+import { Plan } from '@prisma/client';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -154,7 +156,26 @@ export default function Home() {
 
   const handleTimerClick = () => {
     if (isActive) return;
+    if (status !== "authenticated") {
+      setIsWelcomeOpen(true);
+      return;
+    }
     setIsTimeEditOpen(true);
+  };
+
+  const handleTaskMenuToggle = () => {
+    const userPlan = (session?.user as any)?.plan;
+    if (!hasAccess(userPlan, Plan.PLUS)) {
+      // 本来は専用のUpgradeModalを出すべきですが、一旦既存の挙動を維持しつつ
+      // ログインしていない場合はログイン画面、ログイン済みの場合はPricingへ誘導
+      if (status !== "authenticated") {
+        setIsWelcomeOpen(true);
+      } else {
+        window.location.href = "/pricing";
+      }
+      return;
+    }
+    setIsTaskMenuOpen(!isTaskMenuOpen);
   };
 
   useEffect(() => {
@@ -187,7 +208,7 @@ export default function Home() {
             <div className="flex-1 flex items-center bg-muted/30 border border-border/50 rounded-2xl overflow-hidden h-10 group/task shadow-sm">
               {/* Left Side: Dropdown Trigger (Select Task) */}
               <button 
-                onClick={() => setIsTaskMenuOpen(!isTaskMenuOpen)}
+                onClick={handleTaskMenuToggle}
                 className="flex-1 flex items-center gap-3 px-4 h-full hover:bg-muted/50 transition-all min-w-0 text-left"
               >
                 {selectedTask ? (
@@ -204,13 +225,24 @@ export default function Home() {
               </button>
 
               {/* Right Side: Direct Link to Tasks List */}
-              <Link 
-                href="/tasks"
+              <button
+                onClick={() => {
+                  const userPlan = (session?.user as any)?.plan;
+                  if (hasAccess(userPlan, Plan.PLUS)) {
+                    window.location.href = "/tasks";
+                  } else {
+                    if (status !== "authenticated") {
+                      setIsWelcomeOpen(true);
+                    } else {
+                      window.location.href = "/pricing";
+                    }
+                  }
+                }}
                 className="px-3.5 h-full hover:bg-primary/10 transition-all border-l border-border/10 flex items-center justify-center group/arrow bg-muted/20"
                 title="View All Tasks"
               >
                 <LayoutDashboard className="w-3.5 h-3.5 text-muted-foreground shrink-0 group-hover/arrow:text-primary transition-colors" />
-              </Link>
+              </button>
             </div>
 
             {/* Dropdown Menu */}
@@ -247,24 +279,41 @@ export default function Home() {
                   
                   <div className="h-[1px] bg-border my-2" />
                   
-                  <Link 
-                    href="/tasks"
-                    onClick={() => setIsTaskMenuOpen(false)}
-                    className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-primary/5 transition-colors group"
+                  <button
+                    onClick={() => {
+                      const userPlan = (session?.user as any)?.plan;
+                      if (hasAccess(userPlan, Plan.PLUS)) {
+                        window.location.href = "/tasks";
+                      } else {
+                        window.location.href = "/pricing";
+                      }
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-primary/5 transition-colors group"
                   >
                     <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary transition-colors">View All Tasks</span>
                     <ArrowLeft className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors rotate-180" />
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
             
-            <Link 
-              href="/stats"
+            <button
+              onClick={() => {
+                const userPlan = (session?.user as any)?.plan;
+                if (hasAccess(userPlan, Plan.PREMIUM)) {
+                  window.location.href = "/stats";
+                } else {
+                  if (status !== "authenticated") {
+                    setIsWelcomeOpen(true);
+                  } else {
+                    window.location.href = "/pricing";
+                  }
+                }
+              }}
               className="flex items-center justify-center w-10 h-10 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted/50 transition-all text-lg hover:bg-primary/5 active:scale-95"
             >
               📊
-            </Link>
+            </button>
           </div>
         </div>
         

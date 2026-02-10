@@ -3,10 +3,50 @@
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
-import { ArrowLeft, BarChart3, TrendingUp, Calendar, Target, Clock, Trophy } from "lucide-react";
+import { ArrowLeft, BarChart3, TrendingUp, Calendar, Target, Clock, Trophy, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { hasAccess } from "@/lib/auth-helpers";
+import { Plan } from "@prisma/client";
+import { Button } from "@/components/ui/Button";
 
 export default function StatsPage() {
+  const { data: session } = useSession();
+  const userPlan = (session?.user as any)?.plan;
+  const canAccess = hasAccess(userPlan, Plan.PREMIUM);
+
+  if (!canAccess) {
+    return (
+      <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden flex flex-col items-center justify-center p-6 text-center">
+        {/* Background decoration */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] dark:opacity-[0.05]">
+          <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary blur-[120px]" />
+        </div>
+
+        <div className="max-w-md w-full space-y-8 relative z-10">
+          <div className="w-20 h-20 rounded-[2rem] bg-primary/10 flex items-center justify-center mx-auto mb-8 shadow-inner">
+            <Lock className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold font-mono tracking-tighter">Premium Feature</h1>
+            <p className="text-muted-foreground leading-relaxed">
+              詳細な統計・分析機能を使用するには、<br />
+              <span className="text-primary font-bold">Premium Plan</span> へのアップグレードが必要です。
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 pt-4">
+            <Button asChild variant="primary" className="h-14 rounded-2xl text-sm font-black uppercase tracking-widest shadow-lg shadow-primary/20">
+              <Link href="/pricing">Upgrade Now</Link>
+            </Button>
+            <Button asChild variant="ghost" className="h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest">
+              <Link href="/">Back to Timer</Link>
+            </Button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden">
       {/* Background decoration */}
