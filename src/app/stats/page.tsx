@@ -8,7 +8,7 @@ import { ArrowLeft, BarChart3, TrendingUp, Calendar, Target, Clock, Trophy, Lock
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { hasAccess } from "@/lib/auth-helpers";
-import { Plan } from "@prisma/client";
+import { Plan } from "@/types/auth";
 import { Button } from "@/components/ui/Button";
 
 export default function StatsPage() {

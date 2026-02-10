@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, CheckCircle2, Plus, Search, Tag, Lock } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { hasAccess } from "@/lib/auth-helpers";
-import { Plan } from "@prisma/client";
+import { Plan } from "@/types/auth";
 import { Button } from "@/components/ui/Button";
 
 export default function TasksPage() {

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button"
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
-  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ハイドレーションエラー防止のためマウント後に表示
   React.useEffect(() => {

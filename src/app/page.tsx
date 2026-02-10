@@ -17,7 +17,7 @@ import { Star, ChevronUp, X, LayoutDashboard, CreditCard, Info, Sparkles, Chevro
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
 import { hasAccess, getEffectiveStatus } from '@/lib/auth-helpers';
-import { Plan } from '@prisma/client';
+import { Plan } from '@/types/auth';
 
 export default function Home() {
   const { data: session, status: actualStatus } = useSession();

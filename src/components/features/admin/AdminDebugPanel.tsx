@@ -2,17 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { Plan } from "@prisma/client";
+import { Plan } from "@/types/auth";
 import { Button } from "@/components/ui/Button";
 import { ShieldAlert, X } from "lucide-react";
 
 export function AdminDebugPanel() {
   const { data: session, update } = useSession();
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isAdmin = (session?.user as any)?.isAdmin;
 
-  // 管理者でない場合は何も表示しない
-  if (!isAdmin) return null;
+  // マウント前または管理者でない場合は何も表示しない
+  if (!mounted || !isAdmin) return null;
 
   const currentPlan = (session?.user as any)?.plan;
 

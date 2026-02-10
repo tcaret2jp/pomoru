@@ -1,9 +1,9 @@
-import { Plan } from "@prisma/client";
+import { Plan } from "@/types/auth";
 
 /**
  * ユーザーのプランに応じた権限レベルを定義
  */
-export const PLAN_LEVELS: Record<Plan, number> = {
+export const PLAN_LEVELS: Record<string, number> = {
   [Plan.FREE]: 0,
   [Plan.PLUS]: 1,
   [Plan.PREMIUM]: 2,
