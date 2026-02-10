@@ -12,8 +12,18 @@ import { Button } from "@/components/ui/Button";
 
 export default function StatsPage() {
   const { data: session } = useSession();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const userPlan = (session?.user as any)?.plan;
-  const canAccess = hasAccess(userPlan, Plan.PREMIUM);
+  const canAccess = hasAccess(userPlan, Plan.PREMIUM, mounted);
+
+  if (!mounted) {
+    return <main className="min-h-screen bg-background" />;
+  }
 
   if (!canAccess) {
     return (

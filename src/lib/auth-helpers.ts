@@ -13,12 +13,17 @@ export const PLAN_LEVELS: Record<Plan, number> = {
 
 /**
  * ユーザーが特定のプラン以上の権限を持っているか判定する
+ * isMounted が true の場合のみ sessionStorage の偽装を考慮する
  */
-export function hasAccess(userPlan: Plan | undefined | string, requiredPlan: Plan): boolean {
-  // クライアントサイドでのデバッグ用偽装（ブラウザ環境のみ）
+export function hasAccess(
+  userPlan: Plan | undefined | string, 
+  requiredPlan: Plan, 
+  isMounted: boolean = true
+): boolean {
   let effectivePlan = userPlan;
-  if (typeof window !== 'undefined') {
-    // 未ログイン偽装が有効な場合は常に false
+
+  // クライアントサイドでのデバッグ用偽装（マウント後かつブラウザ環境のみ）
+  if (isMounted && typeof window !== 'undefined') {
     if (sessionStorage.getItem("debug_mock_auth") === "unauthenticated") {
       return false;
     }
@@ -31,7 +36,6 @@ export function hasAccess(userPlan: Plan | undefined | string, requiredPlan: Pla
 
   if (!effectivePlan) return false;
   
-  // ユーザーのプランレベルを取得（不明なプランは FREE 扱い）
   const userLevel = PLAN_LEVELS[effectivePlan as Plan] ?? 0;
   const requiredLevel = PLAN_LEVELS[requiredPlan];
 
@@ -40,9 +44,13 @@ export function hasAccess(userPlan: Plan | undefined | string, requiredPlan: Pla
 
 /**
  * デバッグ用の偽装を考慮した認証ステータスを取得する
+ * isMounted が true の場合のみ sessionStorage の偽装を考慮する
  */
-export function getEffectiveStatus(actualStatus: "authenticated" | "unauthenticated" | "loading"): string {
-  if (typeof window !== 'undefined') {
+export function getEffectiveStatus(
+  actualStatus: "authenticated" | "unauthenticated" | "loading",
+  isMounted: boolean = false
+): string {
+  if (isMounted && typeof window !== 'undefined') {
     const mockAuth = sessionStorage.getItem("debug_mock_auth");
     if (mockAuth) return mockAuth;
   }

@@ -21,8 +21,9 @@ import { Plan } from '@prisma/client';
 
 export default function Home() {
   const { data: session, status: actualStatus } = useSession();
-  const status = getEffectiveStatus(actualStatus);
   const [mounted, setMounted] = useState(false);
+  const status = getEffectiveStatus(actualStatus, mounted);
+  
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isTaskMenuOpen, setIsTaskMenuOpen] = useState(false);
@@ -166,7 +167,7 @@ export default function Home() {
 
   const handleTaskMenuToggle = () => {
     const userPlan = (session?.user as any)?.plan;
-    if (!hasAccess(userPlan, Plan.PLUS)) {
+    if (!hasAccess(userPlan, Plan.PLUS, mounted)) {
       // 本来は専用のUpgradeModalを出すべきですが、一旦既存の挙動を維持しつつ
       // ログインしていない場合はログイン画面、ログイン済みの場合はPricingへ誘導
       if (status !== "authenticated") {
@@ -229,7 +230,7 @@ export default function Home() {
               <button
                 onClick={() => {
                   const userPlan = (session?.user as any)?.plan;
-                  if (hasAccess(userPlan, Plan.PLUS)) {
+                  if (hasAccess(userPlan, Plan.PLUS, mounted)) {
                     window.location.href = "/tasks";
                   } else {
                     if (status !== "authenticated") {
@@ -283,7 +284,7 @@ export default function Home() {
                   <button
                     onClick={() => {
                       const userPlan = (session?.user as any)?.plan;
-                      if (hasAccess(userPlan, Plan.PLUS)) {
+                      if (hasAccess(userPlan, Plan.PLUS, mounted)) {
                         window.location.href = "/tasks";
                       } else {
                         window.location.href = "/pricing";
@@ -301,7 +302,7 @@ export default function Home() {
             <button
               onClick={() => {
                 const userPlan = (session?.user as any)?.plan;
-                if (hasAccess(userPlan, Plan.PREMIUM)) {
+                if (hasAccess(userPlan, Plan.PREMIUM, mounted)) {
                   window.location.href = "/stats";
                 } else {
                   if (status !== "authenticated") {

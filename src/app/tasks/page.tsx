@@ -12,8 +12,14 @@ import { Button } from "@/components/ui/Button";
 
 export default function TasksPage() {
   const { data: session } = useSession();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const userPlan = (session?.user as any)?.plan;
-  const canAccess = hasAccess(userPlan, Plan.PLUS);
+  const canAccess = hasAccess(userPlan, Plan.PLUS, mounted);
 
   // 仮のタスクデータ（後にNotion/DBと連携）
   const [tasks] = useState([
@@ -21,6 +27,10 @@ export default function TasksPage() {
     { id: 2, title: "[Sample] Notion APIの調査", category: "Dev", status: "todo" },
     { id: 3, title: "[Sample] リサーチ: 競合アプリの分析", category: "Research", status: "done" },
   ]);
+
+  if (!mounted) {
+    return <main className="min-h-screen bg-background" />;
+  }
 
   if (!canAccess) {
     return (
