@@ -40,8 +40,8 @@ export default function Home() {
   }, []);
 
   const todayTasks = [
-    "Pomoru UIのブラッシュアップ",
-    "Notion APIの調査"
+    "[Sample] Pomoru UIのブラッシュアップ",
+    "[Sample] Notion APIの調査"
   ];
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
@@ -177,16 +177,20 @@ export default function Home() {
           
           {/* Task & Stats Quick Access */}
           <div className="flex items-center gap-2 w-full max-w-[280px] mx-auto relative" ref={taskMenuRef}>
-            <div className="flex-1 flex items-center bg-muted/30 border border-border/50 rounded-2xl overflow-hidden h-10 group/task">
+            <div className="flex-1 flex items-center bg-muted/30 border border-border/50 rounded-2xl overflow-hidden h-10 group/task shadow-sm">
               {/* Left Side: Dropdown Trigger (Select Task) */}
               <button 
                 onClick={() => setIsTaskMenuOpen(!isTaskMenuOpen)}
                 className="flex-1 flex items-center gap-3 px-4 h-full hover:bg-muted/50 transition-all min-w-0 text-left"
               >
-                <CheckCircle2 className={cn("w-3.5 h-3.5 shrink-0", selectedTask ? "text-primary" : "text-muted-foreground")} />
+                {selectedTask ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                ) : (
+                  <ChevronDown className={cn("w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-200", isTaskMenuOpen && "rotate-180")} />
+                )}
                 <span className={cn(
                   "text-[10px] font-bold uppercase tracking-wider truncate",
-                  selectedTask ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+                  selectedTask ? "text-foreground" : "text-muted-foreground group-hover/task:text-foreground"
                 )}>
                   {selectedTask || "Select Task"}
                 </span>
@@ -195,9 +199,10 @@ export default function Home() {
               {/* Right Side: Direct Link to Tasks List */}
               <Link 
                 href="/tasks"
-                className="px-3 h-full hover:bg-muted/50 transition-all border-l border-border/10 flex items-center justify-center group/arrow"
+                className="px-3.5 h-full hover:bg-primary/10 transition-all border-l border-border/10 flex items-center justify-center group/arrow bg-muted/20"
+                title="View All Tasks"
               >
-                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground shrink-0 group-hover/arrow:text-foreground transition-colors" />
+                <LayoutDashboard className="w-3.5 h-3.5 text-muted-foreground shrink-0 group-hover/arrow:text-primary transition-colors" />
               </Link>
             </div>
 
@@ -226,6 +231,12 @@ export default function Home() {
                       </span>
                     </button>
                   ))}
+
+                  <div className="px-3 py-2 mb-1 bg-primary/5 rounded-xl border border-primary/10">
+                    <p className="text-[8px] font-bold text-primary leading-tight">
+                      ※ 現在はプレビュー版です。実際のタスク管理機能は近日公開予定。
+                    </p>
+                  </div>
                   
                   <div className="h-[1px] bg-border my-2" />
                   

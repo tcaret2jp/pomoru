@@ -9,9 +9,9 @@ import { useState } from "react";
 export default function TasksPage() {
   // 仮のタスクデータ（後にNotion/DBと連携）
   const [tasks] = useState([
-    { id: 1, title: "Pomoru UIのブラッシュアップ", category: "Design", status: "todo" },
-    { id: 2, title: "Notion APIの調査", category: "Dev", status: "todo" },
-    { id: 3, title: "リサーチ: 競合アプリの分析", category: "Research", status: "done" },
+    { id: 1, title: "[Sample] Pomoru UIのブラッシュアップ", category: "Design", status: "todo" },
+    { id: 2, title: "[Sample] Notion APIの調査", category: "Dev", status: "todo" },
+    { id: 3, title: "[Sample] リサーチ: 競合アプリの分析", category: "Research", status: "done" },
   ]);
 
   return (
@@ -40,41 +40,62 @@ export default function TasksPage() {
             <h1 className="text-4xl font-bold font-mono tracking-tighter mb-2">Tasks</h1>
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Manage your focus list.</p>
           </div>
-          <button className="w-10 h-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center hover:scale-105 transition-all shadow-lg shadow-primary/20">
+          <button 
+            disabled
+            className="w-10 h-10 rounded-2xl bg-muted text-muted-foreground flex items-center justify-center cursor-not-allowed opacity-50"
+            title="Coming Soon"
+          >
             <Plus className="w-5 h-5" />
           </button>
         </div>
 
         {/* Search Bar (Minimal) */}
-        <div className="relative mb-8 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+        <div className="relative mb-8 group opacity-50 pointer-events-none">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input 
             type="text" 
-            placeholder="Search tasks..." 
-            className="w-full bg-muted/30 border border-border/50 rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-all"
+            placeholder="Coming Soon..." 
+            disabled
+            className="w-full bg-muted/30 border border-border/50 rounded-2xl py-3 pl-12 pr-4 text-sm outline-none"
           />
         </div>
 
-        {/* Task List */}
-        <div className="space-y-3">
-          {tasks.map((task) => (
-            <Card key={task.id} className="p-4 border-border/50 bg-muted/10 hover:bg-muted/20 transition-all cursor-pointer group rounded-2xl">
-              <div className="flex items-center gap-4">
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${task.status === 'done' ? 'bg-primary border-primary' : 'border-muted-foreground/30 group-hover:border-primary/50'}`}>
-                  {task.status === 'done' && <CheckCircle2 className="w-3 h-3 text-white" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium truncate ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}>
-                    {task.title}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Tag className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">{task.category}</span>
+        {/* Task List with Overlay */}
+        <div className="relative">
+          <div className="space-y-3 opacity-40 pointer-events-none filter blur-[1px]">
+            {tasks.map((task) => (
+              <Card key={task.id} className="p-4 border-border/50 bg-muted/10 rounded-2xl">
+                <div className="flex items-center gap-4">
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${task.status === 'done' ? 'bg-primary border-primary' : 'border-muted-foreground/30'}`}>
+                    {task.status === 'done' && <CheckCircle2 className="w-3 h-3 text-white" />}
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className={`text-sm font-medium truncate ${task.status === 'done' ? 'text-muted-foreground line-through' : ''}`}>
+                      {task.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Tag className="w-3 h-3 text-muted-foreground" />
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">{task.category}</span>
+                    </div>
                   </div>
                 </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Aggressive Coming Soon Overlay */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+            <div className="bg-background/80 backdrop-blur-sm border border-primary/20 px-8 py-6 rounded-[2rem] shadow-2xl flex flex-col items-center gap-3 transform -rotate-2">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl animate-bounce">
+                🚀
               </div>
-            </Card>
-          ))}
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Coming Soon</p>
+              <p className="text-xs font-bold text-center leading-relaxed">
+                Notion連携を含むタスク機能は<br />
+                現在全力で開発中です。
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
