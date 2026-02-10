@@ -19,12 +19,12 @@ export default function StatsPage() {
     setMounted(true);
   }, []);
 
-  const userPlan = (session?.user as any)?.plan;
-  const canAccess = hasAccess(userPlan, Plan.PREMIUM, mounted);
-
   if (!mounted) {
     return <main className="min-h-screen bg-background" />;
   }
+
+  const userPlan = (session?.user as any)?.plan;
+  const canAccess = hasAccess(userPlan, Plan.PREMIUM, true);
 
   if (!canAccess) {
     return (

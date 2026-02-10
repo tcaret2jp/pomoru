@@ -18,9 +18,6 @@ export default function TasksPage() {
     setMounted(true);
   }, []);
 
-  const userPlan = (session?.user as any)?.plan;
-  const canAccess = hasAccess(userPlan, Plan.PLUS, mounted);
-
   // 仮のタスクデータ（後にNotion/DBと連携）
   const [tasks] = useState([
     { id: 1, title: "[Sample] Pomoru UIのブラッシュアップ", category: "Design", status: "todo" },
@@ -31,6 +28,9 @@ export default function TasksPage() {
   if (!mounted) {
     return <main className="min-h-screen bg-background" />;
   }
+
+  const userPlan = (session?.user as any)?.plan;
+  const canAccess = hasAccess(userPlan, Plan.PLUS, true);
 
   if (!canAccess) {
     return (

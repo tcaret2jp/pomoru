@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/Button"
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
-  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ハイドレーションエラー防止のためマウント後に表示
   React.useEffect(() => {
@@ -37,20 +36,6 @@ export function ThemeToggle() {
     return "System Default"
   }
 
-  // Debug Panel Logic
-  const handleStart = () => {
-    timerRef.current = setTimeout(() => {
-      window.dispatchEvent(new Event('toggle-debug-panel'));
-    }, 1500); // 1.5s long press
-  };
-
-  const handleEnd = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
   return (
     <div className="flex flex-col items-center">
       <Button
@@ -58,17 +43,12 @@ export function ThemeToggle() {
         size="sm"
         className="w-10 h-10 rounded-full hover:bg-muted"
         onClick={toggleTheme}
-        onMouseDown={handleStart}
-        onMouseUp={handleEnd}
-        onMouseLeave={handleEnd}
-        onTouchStart={handleStart}
-        onTouchEnd={handleEnd}
         title={getLabel()}
       >
-        <span className="text-xl select-none">{getIcon()}</span>
+        <span className="text-xl">{getIcon()}</span>
         <span className="sr-only">Toggle theme</span>
       </Button>
-      <span className="text-[10px] text-muted-foreground font-medium mt-1 uppercase select-none">
+      <span className="text-[10px] text-muted-foreground font-medium mt-1 uppercase">
         {theme === "system" ? "Auto" : theme}
       </span>
     </div>

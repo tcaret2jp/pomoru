@@ -22,7 +22,9 @@ import { Plan } from '@/types/auth';
 export default function Home() {
   const { data: session, status: actualStatus } = useSession();
   const [mounted, setMounted] = useState(false);
-  const status = getEffectiveStatus(actualStatus, mounted);
+  
+  // マウント後にのみデバッグ偽装ステータスを適用
+  const status = mounted ? getEffectiveStatus(actualStatus, true) : actualStatus;
   
   const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
@@ -34,23 +36,44 @@ export default function Home() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const taskMenuRef = useRef<HTMLDivElement>(null);
 
-  // メニューの外側をクリックしたら閉じる
+  // マウント状態の管理のみを行う
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (taskMenuRef.current && !taskMenuRef.current.contains(event.target as Node)) {
-        setIsTaskMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    setMounted(true);
   }, []);
+
+  // 設定のロード
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('pomoru-settings');
+    if (savedSettings) {
+      try {
+        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) });
+      } catch (e) {
+        console.error('Failed to load settings', e);
+      }
+    }
+  }, []);
+
+  // Welcome Modal の表示（マウント後かつ未ログイン時）
+  useEffect(() => {
+    if (!mounted) return;
+    
+    const hasSeenWelcome = localStorage.getItem('pomoru-welcome-seen');
+    if (status === "unauthenticated" && !hasSeenWelcome) {
+      setIsWelcomeOpen(true);
+    }
+  }, [mounted, status]);
+
+  const closeWelcome = () => {
+    setIsWelcomeOpen(false);
+    localStorage.setItem('pomoru-welcome-seen', 'true');
+  };
 
   const todayTasks = [
     "[Sample] Pomoru UIのブラッシュアップ",
     "[Sample] Notion APIの調査"
   ];
+
   const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientY);
@@ -72,31 +95,7 @@ export default function Home() {
     setTouchStart(null);
   };
 
-  useEffect(() => {
-    // 1. Settings load
-    const savedSettings = localStorage.getItem('pomoru-settings');
-    if (savedSettings) {
-      try {
-        setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) });
-      } catch (e) {
-        console.error('Failed to load settings', e);
-      }
-    }
-
-    // 2. Welcome Modal check
-    // 未ログインかつ、過去にこのポップアップを見ていない場合に表示
-    const hasSeenWelcome = localStorage.getItem('pomoru-welcome-seen');
-    if (status === "unauthenticated" && !hasSeenWelcome) {
-      setIsWelcomeOpen(true);
-    }
-
-    setMounted(true);
-  }, [status]);
-
-  const closeWelcome = () => {
-    setIsWelcomeOpen(false);
-    localStorage.setItem('pomoru-welcome-seen', 'true');
-  };
+  const [playAlarm] = useSound('/alarm.mp3', { volume: 0.5 });
 
   const {
     timeLeft,
