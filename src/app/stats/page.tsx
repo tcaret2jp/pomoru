@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { ArrowLeft, BarChart3, TrendingUp, Calendar, Target, Clock, Trophy, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";

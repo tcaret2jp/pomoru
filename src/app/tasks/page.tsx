@@ -3,8 +3,8 @@
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { ArrowLeft, CheckCircle2, Plus, Search, Tag, Lock } from "lucide-react";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { hasAccess } from "@/lib/auth-helpers";
 import { Plan } from "@prisma/client";

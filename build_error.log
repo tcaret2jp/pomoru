@@ -1,0 +1,13 @@
+Failed to compile.
+
+./src/app/stats/page.tsx:15:33
+Type error: Cannot find name 'useState'.
+
+[0m [90m 13 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mStatsPage[39m() {
+ [90m 14 |[39m   [36mconst[39m { data[33m:[39m session } [33m=[39m useSession()[33m;[39m
+[31m[1m>[22m[39m[90m 15 |[39m   [36mconst[39m [mounted[33m,[39m setMounted] [33m=[39m useState([36mfalse[39m)[33m;[39m
+ [90m    |[39m                                 [31m[1m^[22m[39m
+ [90m 16 |[39m   
+ [90m 17 |[39m   useEffect(() [33m=>[39m {
+ [90m 18 |[39m     setMounted([36mtrue[39m)[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null
