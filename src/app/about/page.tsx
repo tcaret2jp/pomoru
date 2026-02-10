@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
-import { ArrowLeft, Clock, Moon, Cloud, Zap } from "lucide-react";
+import { ArrowLeft, Clock, Moon, Cloud, Zap, TrendingUp, Calendar, Target } from "lucide-react";
 
 export default function AboutPage() {
   const features = [
@@ -14,9 +14,19 @@ export default function AboutPage() {
       description: "セッション終了後も集中を途切れさせない、シームレスなカウントアップ機能。" 
     },
     { 
-      icon: <Moon className="w-6 h-6 text-primary" />,
-      title: "Dark Mode", 
-      description: "視覚的ノイズを極限まで排除した、高コントラストな漆黒のインターフェース。" 
+      icon: <TrendingUp className="w-6 h-6 text-primary" />,
+      title: "Daily Focus",
+      description: "日ごとの集中時間を可視化。自分の最も生産的な時間帯を特定します（近日公開）。"
+    },
+    { 
+      icon: <Calendar className="w-6 h-6 text-primary" />,
+      title: "Session History",
+      description: "完了したポモドーロの全履歴。過去の努力をいつでも振り返れます（近日公開）。"
+    },
+    { 
+      icon: <Target className="w-6 h-6 text-primary" />,
+      title: "Goals & Badges",
+      description: "目標達成に応じた報酬システム。継続する楽しさを提供します（近日公開）。"
     },
     { 
       icon: <Cloud className="w-6 h-6 text-primary" />,
@@ -45,7 +55,7 @@ export default function AboutPage() {
           className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-medium">Back to Timer</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Exit</span>
         </Link>
         <ThemeToggle />
       </header>

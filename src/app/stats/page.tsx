@@ -3,27 +3,10 @@
 import { Card } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import Link from "next/link";
-import { ArrowLeft, BarChart3, TrendingUp, Calendar, Target, Sparkles } from "lucide-react";
+import { ArrowLeft, BarChart3, TrendingUp, Calendar, Target, Clock, Trophy } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function StatsPage() {
-  const previews = [
-    {
-      icon: <TrendingUp className="w-5 h-5 text-primary" />,
-      title: "Daily Focus",
-      description: "日ごとの集中時間を可視化。自分の最も生産的な時間帯を特定します。"
-    },
-    {
-      icon: <Calendar className="w-5 h-5 text-primary" />,
-      title: "Session History",
-      description: "完了したポモドーロの全履歴。過去の努力をいつでも振り返れます。"
-    },
-    {
-      icon: <Target className="w-5 h-5 text-primary" />,
-      title: "Goals & Badges",
-      description: "目標達成に応じた報酬システム。継続する楽しさを提供します。"
-    }
-  ];
-
   return (
     <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden">
       {/* Background decoration */}
@@ -44,44 +27,105 @@ export default function StatsPage() {
         <ThemeToggle />
       </header>
 
-      {/* Hero Section */}
-      <section className="max-w-3xl mx-auto px-6 pt-16 pb-12 text-center relative z-10">
-        <div className="inline-flex p-3 rounded-2xl bg-primary/10 text-primary mb-6 animate-pulse">
-          <BarChart3 className="w-6 h-6" />
+      {/* Content Area */}
+      <section className="max-w-5xl mx-auto px-6 py-12 relative z-10">
+        <div className="mb-12 text-center md:text-left">
+          <h1 className="text-4xl font-bold font-mono tracking-tighter mb-2">Analytics</h1>
+          <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Visualize your focus journey.</p>
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold font-mono tracking-tighter mb-6 leading-tight">
-          Your <span className="text-primary italic">Stats.</span>
-        </h1>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted border border-border/50 mb-8">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
-          <span className="text-[10px] font-black uppercase tracking-widest">Coming Soon</span>
-        </div>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto font-medium">
-          あなたの集中をデータで解き明かす。 <br />
-          詳細な分析ダッシュボードを現在開発中です。
-        </p>
-      </section>
 
-      {/* Preview Section */}
-      <section className="max-w-4xl mx-auto px-6 pb-32 relative z-10">
-        <div className="grid md:grid-cols-3 gap-6">
-          {previews.map((item) => (
-            <Card key={item.title} className="p-6 border-none bg-muted/20 backdrop-blur-sm rounded-[2rem] flex flex-col items-center text-center group hover:bg-muted/30 transition-all">
-              <div className="p-3 rounded-2xl bg-background shadow-sm mb-4 group-hover:scale-110 transition-transform">
-                {item.icon}
+        {/* Dashboard Mockup with Overlay */}
+        <div className="relative">
+          {/* Mockup UI - Blurrred and Non-interactive */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-30 filter blur-[2px] pointer-events-none select-none">
+            
+            {/* Stat Card 1: Daily Activity Chart Mock */}
+            <Card className="md:col-span-2 p-8 border-border/50 bg-muted/10 rounded-[2.5rem] flex flex-col gap-6">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Weekly Focus</span>
+                </div>
+                <div className="text-[10px] font-bold text-muted-foreground">FEB 02 - FEB 09</div>
               </div>
-              <h3 className="text-xs font-black uppercase tracking-widest mb-2">{item.title}</h3>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
+              <div className="flex items-end justify-between h-32 gap-2 px-2">
+                {[40, 70, 45, 90, 65, 80, 30].map((h, i) => (
+                  <div key={i} className="flex-1 bg-primary/20 rounded-t-lg relative group">
+                    <div className="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all" style={{ height: `${h}%` }} />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between text-[8px] font-black text-muted-foreground px-1">
+                <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+              </div>
             </Card>
-          ))}
+
+            {/* Stat Card 2: Goals Mock */}
+            <Card className="p-8 border-border/50 bg-muted/10 rounded-[2.5rem] flex flex-col items-center justify-center text-center gap-4">
+              <div className="relative w-32 h-32 flex items-center justify-center">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-muted/20" />
+                  <circle cx="64" cy="64" r="58" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={364} strokeDashoffset={100} className="text-primary" />
+                </svg>
+                <div className="absolute flex flex-col items-center">
+                  <span className="text-3xl font-bold font-mono tracking-tighter">75%</span>
+                  <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Daily Goal</span>
+                </div>
+              </div>
+              <p className="text-[10px] font-bold text-muted-foreground">あと 2 セッションで目標達成</p>
+            </Card>
+
+            {/* Stat Card 3: Recent History Mock */}
+            <Card className="md:col-span-3 p-8 border-border/50 bg-muted/10 rounded-[2.5rem]">
+              <div className="flex items-center gap-2 mb-6">
+                <Clock className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Recent Sessions</span>
+              </div>
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center justify-between py-3 border-b border-border/10 last:border-0">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-xl bg-background flex items-center justify-center text-xs">🚀</div>
+                      <div>
+                        <p className="text-xs font-bold">UI Design Session</p>
+                        <p className="text-[9px] text-muted-foreground uppercase font-black tracking-tighter">Today, 14:20</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-bold font-mono text-primary">25:00</p>
+                      <p className="text-[8px] font-black text-muted-foreground uppercase">Focus</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+
+          {/* Coming Soon Overlay */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+            <div className="bg-background/80 backdrop-blur-md border border-primary/20 p-10 rounded-[3rem] shadow-2xl flex flex-col items-center gap-4 transform rotate-1 scale-110 md:scale-100">
+              <div className="w-16 h-16 rounded-[1.5rem] bg-primary/10 flex items-center justify-center text-3xl animate-bounce shadow-inner">
+                📊
+              </div>
+              <div className="text-center">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-2">Coming Soon</p>
+                <h2 className="text-xl font-bold tracking-tight mb-2">統計・分析機能</h2>
+                <p className="text-[11px] font-medium text-muted-foreground leading-relaxed max-w-[200px] mx-auto">
+                  あなたの努力を可視化する<br />
+                  高度な分析ツールを開発中です。
+                </p>
+              </div>
+              <div className="mt-2 px-4 py-1.5 rounded-full bg-primary text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-primary/20">
+                Universe & Premium
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="max-w-6xl mx-auto px-6 py-12 text-center border-t border-border/30 text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground relative z-10 font-mono">
-        © 2026 POMORU PROJECT. MINIMALISM IN FOCUS.
+      <footer className="max-w-5xl mx-auto px-6 py-12 text-center text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/30 font-mono">
+        Your focus, quantified.
       </footer>
     </main>
   );
