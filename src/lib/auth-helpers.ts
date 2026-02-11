@@ -19,12 +19,18 @@ export function hasAccess(
   requiredPlan: Plan, 
   isMounted: boolean
 ): boolean {
-  if (!isMounted) return false;
+  // SSR中またはマウント前は、偽装を一切行わず、かつ基本権限以外は false を返す
+  if (!isMounted || typeof window === 'undefined') {
+    if (!userPlan) return false;
+    const userLevel = PLAN_LEVELS[userPlan] ?? 0;
+    const requiredLevel = PLAN_LEVELS[requiredPlan] ?? 0;
+    return userLevel >= requiredLevel;
+  }
 
   let effectivePlan = userPlan;
 
-  // クライアントサイドでのデバッグ用偽装
-  if (typeof window !== 'undefined') {
+  // クライアントサイドでのみデバッグ用偽装を考慮
+  try {
     if (sessionStorage.getItem("debug_mock_auth") === "unauthenticated") {
       return false;
     }
@@ -32,6 +38,9 @@ export function hasAccess(
     if (mockPlan) {
       effectivePlan = mockPlan;
     }
+  } catch (e) {
+    // sessionStorage が使えない環境（プライベートブラウジング等）への配慮
+    console.error("sessionStorage access failed", e);
   }
 
   if (!effectivePlan) return false;
@@ -50,9 +59,13 @@ export function getEffectiveStatus(
   isMounted: boolean
 ): string {
   if (isMounted && typeof window !== 'undefined') {
-    const mockAuth = sessionStorage.getItem("debug_mock_auth");
-    if (mockAuth === "unauthenticated") return "unauthenticated";
-    if (mockAuth === "authenticated") return "authenticated";
+    try {
+      const mockAuth = sessionStorage.getItem("debug_mock_auth");
+      if (mockAuth === "unauthenticated") return "unauthenticated";
+      if (mockAuth === "authenticated") return "authenticated";
+    } catch (e) {
+      console.error("sessionStorage access failed", e);
+    }
   }
   return actualStatus;
 }

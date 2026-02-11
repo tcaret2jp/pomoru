@@ -23,11 +23,9 @@ export function Modal({ isOpen, onClose, title, description, children, className
           className
         )}>
           <div className="flex flex-col space-y-1.5 text-center">
-            {title && (
-              <DialogPrimitive.Title className="text-lg font-semibold leading-none tracking-tight text-foreground">
-                {title}
-              </DialogPrimitive.Title>
-            )}
+            <DialogPrimitive.Title className={cn("text-lg font-semibold leading-none tracking-tight text-foreground", !title && "sr-only")}>
+              {title || "Modal"}
+            </DialogPrimitive.Title>
             {description && (
               <DialogPrimitive.Description className="text-sm text-muted-foreground text-left">
                 {description}

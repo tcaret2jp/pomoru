@@ -60,7 +60,8 @@ export function AdminDebugPanel() {
   };
 
   const setMockPlan = (plan: Plan) => {
-    sessionStorage.removeItem("debug_mock_auth");
+    // プラン選択時は自動的にログイン済み（authenticated）として扱う
+    sessionStorage.setItem("debug_mock_auth", "authenticated");
     sessionStorage.setItem("debug_mock_plan", plan);
     window.location.reload();
   };
