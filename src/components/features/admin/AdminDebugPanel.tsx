@@ -18,16 +18,24 @@ export function AdminDebugPanel() {
     setMounted(true);
   }, []);
 
-  const isAdmin = (session?.user as any)?.isAdmin;
   const isLocalhost = typeof window !== 'undefined' && 
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-  // 管理者であるか、ローカル環境であれば表示
-  if (!mounted || (!isAdmin && !isLocalhost)) return null;
+  // ローカル環境のみ表示
+  if (!mounted || !isLocalhost) return null;
 
   const currentPlan = (session?.user as any)?.plan;
   const mockAuth = typeof window !== 'undefined' ? sessionStorage.getItem("debug_mock_auth") : null;
   const isMockLoggedIn = mockAuth === "authenticated";
+  const isMockLoggedOut = mockAuth === "unauthenticated";
+  const isRealLoggedIn = !!session?.user;
+
+  // ボタンのラベルを動的に変更
+  const getAuthLabel = () => {
+    if (isMockLoggedIn) return "LOGGED IN (MOCK)";
+    if (isMockLoggedOut) return "NOT LOGGED IN (MOCK)";
+    return isRealLoggedIn ? "LOGGED IN (REAL)" : "NOT LOGGED IN (REAL)";
+  };
 
   const handleStart = (e: React.TouchEvent | React.MouseEvent) => {
     setIsDragging(true);
@@ -106,7 +114,7 @@ export function AdminDebugPanel() {
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-destructive font-mono">Control Center</span>
             </div>
             <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-muted transition-colors">
-              <ChevronUp className="w-5 h-5" />
+              <ChevronUp className="w-5 h-5 text-foreground" />
             </button>
           </div>
 
@@ -117,11 +125,13 @@ export function AdminDebugPanel() {
                 onClick={toggleMockAuth}
                 className={cn(
                   "flex items-center justify-center gap-3 py-4 rounded-2xl border transition-all text-xs font-black font-mono",
-                  mockAuth ? "bg-destructive text-white border-destructive shadow-lg" : "bg-muted/30 border-border/50 hover:bg-muted/50"
+                  mockAuth 
+                    ? "bg-destructive text-white border-destructive" 
+                    : "bg-transparent text-foreground border-foreground/20 hover:bg-foreground/5"
                 )}
               >
-                {isMockLoggedIn ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
-                <span>{isMockLoggedIn ? "LOGGED IN (MOCK)" : "NOT LOGGED IN (MOCK)"}</span>
+                {isMockLoggedIn || (isRealLoggedIn && !mockAuth) ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                <span className="inline-block">{getAuthLabel()}</span>
               </button>
 
               {/* Plan Simulators - 2x2 Grid */}
@@ -132,7 +142,9 @@ export function AdminDebugPanel() {
                     onClick={() => setMockPlan(p)}
                     className={cn(
                       "py-4 rounded-2xl border transition-all text-[10px] font-black font-mono tracking-tighter",
-                      currentPlan === p && !mockAuth ? "bg-destructive text-white border-destructive shadow-md" : "bg-muted/30 border-border/50 hover:bg-muted/50"
+                      currentPlan === p && !mockAuth 
+                        ? "bg-destructive text-white border-destructive" 
+                        : "bg-transparent text-foreground border-foreground/10 hover:bg-foreground/5"
                     )}
                   >
                     {p}
@@ -143,7 +155,7 @@ export function AdminDebugPanel() {
 
             <button
               onClick={clearAllMocks}
-              className="w-full py-3 mt-2 rounded-2xl border-2 border-dashed border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/50 transition-all"
+              className="w-full py-3 mt-2 rounded-2xl border-2 border-dashed border-foreground/10 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-foreground/5 hover:text-foreground transition-all"
             >
               Clear All Mocks (Reset to DB)
             </button>

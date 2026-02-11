@@ -29,18 +29,23 @@ export function hasAccess(
 
   let effectivePlan = userPlan;
 
-  // クライアントサイドでのみデバッグ用偽装を考慮
-  try {
-    if (sessionStorage.getItem("debug_mock_auth") === "unauthenticated") {
-      return false;
+  // クライアントサイドでのみデバッグ用偽装を考慮（ローカル環境のみ）
+  const isLocalhost = typeof window !== 'undefined' && 
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+  if (isLocalhost) {
+    try {
+      if (sessionStorage.getItem("debug_mock_auth") === "unauthenticated") {
+        return false;
+      }
+      const mockPlan = sessionStorage.getItem("debug_mock_plan");
+      if (mockPlan) {
+        effectivePlan = mockPlan;
+      }
+    } catch (e) {
+      // sessionStorage が使えない環境（プライベートブラウジング等）への配慮
+      console.error("sessionStorage access failed", e);
     }
-    const mockPlan = sessionStorage.getItem("debug_mock_plan");
-    if (mockPlan) {
-      effectivePlan = mockPlan;
-    }
-  } catch (e) {
-    // sessionStorage が使えない環境（プライベートブラウジング等）への配慮
-    console.error("sessionStorage access failed", e);
   }
 
   if (!effectivePlan) return false;
@@ -59,12 +64,16 @@ export function getEffectiveStatus(
   isMounted: boolean
 ): string {
   if (isMounted && typeof window !== 'undefined') {
-    try {
-      const mockAuth = sessionStorage.getItem("debug_mock_auth");
-      if (mockAuth === "unauthenticated") return "unauthenticated";
-      if (mockAuth === "authenticated") return "authenticated";
-    } catch (e) {
-      console.error("sessionStorage access failed", e);
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    if (isLocalhost) {
+      try {
+        const mockAuth = sessionStorage.getItem("debug_mock_auth");
+        if (mockAuth === "unauthenticated") return "unauthenticated";
+        if (mockAuth === "authenticated") return "authenticated";
+      } catch (e) {
+        console.error("sessionStorage access failed", e);
+      }
     }
   }
   return actualStatus;
